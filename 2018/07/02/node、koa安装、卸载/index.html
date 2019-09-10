@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+<title>Node安装最佳方案(源码安装8.0.0) | </title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">ww</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">ww</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Node安装最佳方案(源码安装8.0.0)</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">ww</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">七月 2, 2018&nbsp;&nbsp;17:08:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>Node安装最佳方案(源码安装8.0.0)</p>
+<p> <strong>操作系统：Centos 7.0</strong><br> <strong>node 版本： Node.js 8.0.0</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://nodejs.org/dist/v8.8.0/node-v8.8.0-linux-x64.tar.xz</span><br><span class="line"></span><br><span class="line"># 下载源码：</span><br><span class="line">$ wget https://nodejs.org/download/release/v6.0.0/node-v6.0.0.tar.gz</span><br><span class="line">$ tar -zvxf node-v8.0.0.tar.gz</span><br><span class="line">$ cd node-v8.0.0/</span><br><span class="line">$ ./configure</span><br><span class="line">#NOTE: 这里需要使用python2.7 的环境。python版本相关的问题，可以阅读python版本管理(python)相关的内容。</span><br><span class="line"></span><br><span class="line">$ make</span><br><span class="line">#NOTE: 这个比较费时间。 </span><br><span class="line"></span><br><span class="line">$ sudo make install </span><br><span class="line"></span><br><span class="line">$ node --version</span><br><span class="line">v8.0.0</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>node v8.0.0包含了npm 包</p>
+</blockquote>
+<h4 id="安装koa"><a href="#安装koa" class="headerlink" title="安装koa"></a>安装koa</h4><p>提供一个国内镜像安装方法，速度非常快，在直接npm模块失败的时候非常好用，使用npm –registry=<a href="https://link.jianshu.com/?t=http://registry.npmjs.org" target="_blank" rel="noopener">http://registry.npmjs.org</a> install XXXXX –XX 命令安装，只需要在install后面加上要安装的中间件名称和相应的参数即可。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">cd node-v9.0.0</span><br><span class="line"></span><br><span class="line">mkdir project</span><br><span class="line"></span><br><span class="line">cd project</span><br><span class="line"></span><br><span class="line">npm init</span><br><span class="line"></span><br><span class="line">vi package-lock.json(加入&quot;private&quot;: true,)</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    &quot;private&quot;: true,</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">npm --registry=http://registry.npmjs.org install koa</span><br></pre></td></tr></table></figure>
+
+<h2 id="扩展阅读："><a href="#扩展阅读：" class="headerlink" title="扩展阅读："></a>扩展阅读：</h2><p>Node.js 官网地址：<br> <a href="https://link.jianshu.com?t=https://nodejs.org/download/release/v6.0.0/" target="_blank" rel="noopener">https://nodejs.org/download/release/v6.0.0/</a></p>
+<p>有current 版本和 ltc 版本：<br> <a href="https://link.jianshu.com?t=https://nodejs.org/en/download/current/" target="_blank" rel="noopener">https://nodejs.org/en/download/current/</a></p>
+<p>Ubuntu 15.04下安装Node.JS的不同方式<br> <a href="https://link.jianshu.com?t=http://www.linuxidc.com/Linux/2015-07/119588.htm" target="_blank" rel="noopener">http://www.linuxidc.com/Linux/2015-07/119588.htm</a><br> 简介：</p>
+<p>也提供了多种方法…</p>
+<p>如果你要在Ubuntu 15.04上安装Node.js的话，这篇教程对你来说肯定很重要。Node.js从本质上来说就是一个运行在服务端上的封装好了输入输出流的javascript程序。Node.js巧妙的使用单线程的事件循环来处理高吞吐量和非阻塞IO。同时它也是一个提供了通过操作系统读写文件和网络操作功能的平台层。所以这篇文章将展示在Ubuntu 15.04 server上不同的安装Node.Js的方式。</p>
+<p>如何在Ubuntu上安装最新版本的Node.js<br> <a href="https://link.jianshu.com?t=http://blog.csdn.net/chszs/article/details/37521463" target="_blank" rel="noopener">http://blog.csdn.net/chszs/article/details/37521463</a><br> 简介：</p>
+<p>提供了apt 源的方法。其实没什么用。apt-repository 还是比较旧的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># apt-get update  </span><br><span class="line"># apt-get install -y python-software-properties software-properties-common  </span><br><span class="line"># add-apt-repository ppa:chris-lea/node.js  </span><br><span class="line"># apt-get update  </span><br><span class="line"># apt-get install nodejs</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://link.jianshu.com?t=http://www.111cn.net/sys/Ubuntu/58898.htm" target="_blank" rel="noopener">http://www.111cn.net/sys/Ubuntu/58898.htm</a><br> ubuntu下安装nodejs的方法<br> 简介：</p>
+<p>下面我总结了两种方法来安装nodejs了，我大概看了一下大概方法相同但是后面一种方法包拯 npm,express一起都讲到了，第一种方法只nodejs安装</p>
+<p> 卸载 Node.js</p>
+<ol>
+<li>使用 yum 先删除一次</li>
+</ol>
+<blockquote>
+<p>yum remove nodejs npm -y</p>
+</blockquote>
+<ol>
+<li>手动删除残留<br> 进入 /usr/local/lib 删除所有 node 和 node_modules文件夹<br> 进入 /usr/local/include 删除所有 node 和  node_modules 文件夹<br> 检查 ~ 文件夹里面的”local”   “lib”  “include”  文件夹，然后删除里面的所有  “node” 和  “node_modules” 文件夹<br> 可以使用以下命令查找</li>
+</ol>
+<blockquote>
+<ol>
+<li>find ~/ -name node</li>
+<li>find ~/ -name node_modules</li>
+</ol>
+</blockquote>
+<p>进入 /usr/local/bin 删除 node 的可执行文件<br> 删除: /usr/local/bin/npm<br> 删除: /usr/local/share/man/man1/node.1<br> 删除: /usr/local/lib/dtrace/node.d<br> 删除: rm -rf /home/[homedir]/.npm<br> 删除: rm -rf /home/root/.npm</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>ww</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://yoursite.com/2018/07/02/node、koa安装、卸载/">http://yoursite.com/2018/07/02/node、koa安装、卸载/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>good good stady</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/07/09/NumPy 切片和索引/">numpy切片和index</a>
+            
+            
+            <a class="next" rel="next" href="/2018/05/09/redis配置/">redis配置</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© ww | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

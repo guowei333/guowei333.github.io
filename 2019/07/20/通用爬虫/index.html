@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+<title>通用爬虫 | </title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">ww</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">ww</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">通用爬虫</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">ww</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">七月 20, 2019&nbsp;&nbsp;17:08:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>scrapy框架使用scrapy 通用爬虫</p>
+<p>CRAWLSpidery提供的是一个通用的spider</p>
+<p>在spider里我们可以定义一些爬取规则来实现页面的提取</p>
+<p>这些规则由一个Rule表示 Rule 里包含提取和跟进页面的配置</p>
+<h5 id="spider会根据Rule定义的条件来确定当前页面中那些连接需要继续爬取"><a href="#spider会根据Rule定义的条件来确定当前页面中那些连接需要继续爬取" class="headerlink" title="spider会根据Rule定义的条件来确定当前页面中那些连接需要继续爬取"></a>spider会根据Rule定义的条件来确定当前页面中那些连接需要继续爬取</h5><h5 id="那些页面爬取结果用那个方法解析"><a href="#那些页面爬取结果用那个方法解析" class="headerlink" title="那些页面爬取结果用那个方法解析"></a>那些页面爬取结果用那个方法解析</h5><p>CrawlSpider 继承自 Spider类 除了Spider 类的所有方法和属性</p>
+<h5 id="还提供了非常重要的属性和方法"><a href="#还提供了非常重要的属性和方法" class="headerlink" title="还提供了非常重要的属性和方法"></a>还提供了非常重要的属性和方法</h5><ul>
+<li><code>rules</code>，它是爬取规则属性，是包含一个或多个<code>Rule</code>对象的列表。每个<code>Rule</code>对爬取网站的动作都做了定义，CrawlSpider会读取<code>rules</code>的每一个<code>Rule</code>并进行解析。</li>
+<li><code>parse_start_url()</code>，它是一个可重写的方法。当<code>start_urls</code>里对应的Request得到Response时，该方法被调用，它会分析Response并必须返回<code>Item</code>对象或者<code>Request</code>对象。</li>
+</ul>
+<p>这里最重要的内容莫过于<code>Rule</code>的定义了，它的定义和参数如下所示：</p>
+<p><strong>class</strong> <strong>scrapy</strong>.<strong>contrib</strong>.<strong>spiders</strong>.<strong>Rule</strong>(link_extractor, callback=None, cb_kwargs=None, follow=None, process_links=None, process_request=None)</p>
+<h4 id="说明Rule的参数"><a href="#说明Rule的参数" class="headerlink" title="说明Rule的参数:"></a>说明<code>Rule</code>的参数:</h4><ul>
+<li><p><code>link_extractor</code>：是Link Extractor对象。通过它，Spider可以知道从爬取的页面中提取哪些链接。提取出的链接会自动生成Request。它又是一个数据结构，一般常用<code>LxmlLinkExtractor</code>对象作为参数，其定义和参数如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">scrapy</span>.<span class="title">linkextractors</span>.<span class="title">lxmlhtml</span>.<span class="title">LxmlLinkExtractor</span><span class="params">(allow=<span class="params">()</span>, deny=<span class="params">()</span>, allow_domains=<span class="params">()</span>, deny_domains=<span class="params">()</span>, deny_extensions=None, restrict_xpaths=<span class="params">()</span>, restrict_css=<span class="params">()</span>, tags=<span class="params">(<span class="string">'a'</span>, <span class="string">'area'</span>)</span>, attrs=<span class="params">(<span class="string">'href'</span>, )</span>, canonicalize=False, unique=True, process_value=None, strip=True)</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<p>  <code>allow</code>是一个正则表达式或正则表达式列表，它定义了从当前页面提取出的链接哪些是符合要求的，只有符合要求的链接才会被跟进。<code>deny</code>则相反。<code>allow_domains</code>定义了符合要求的域名，只有此域名的链接才会被跟进生成新的Request，它相当于域名白名单。<code>deny_domains</code>则相反，相当于域名黑名单。<code>restrict_xpaths</code>定义了从当前页面中XPath匹配的区域提取链接，其值是XPath表达式或XPath表达式列表。<code>restrict_css</code>定义了从当前页面中CSS选择器匹配的区域提取链接，其值是CSS选择器或CSS选择器列表。还有一些其他参数代表了提取链接的标签、是否去重、链接的处理等内容，使用的频率不高。可以参考文档的参数说明：<a href="http://scrapy.readthedocs.io/en/latest/topics/link-extractors.html#module-scrapy.linkextractors.lxmlhtml。" target="_blank" rel="noopener">http://scrapy.readthedocs.io/en/latest/topics/link-extractors.html#module-scrapy.linkextractors.lxmlhtml。</a></p>
+<ul>
+<li><p><code>callback</code>：即回调函数，和之前定义Request的<code>callback</code>有相同的意义。每次从<code>link_extractor</code>中获取到链接时，该函数将会调用。该回调函数接收一个<code>response</code>作为其第一个参数，并返回一个包含Item或Request对象的列表。注意，避免使用<code>parse()</code>作为回调函数。由于<code>CrawlSpider</code>使用<code>parse()</code>方法来实现其逻辑，如果<code>parse()</code>方法覆盖了，<code>CrawlSpider</code>将会运行失败。</p>
+</li>
+<li><p><code>cb_kwargs</code>：字典，它包含传递给回调函数的参数。</p>
+</li>
+<li><p><code>follow</code>：布尔值，即<code>True</code>或<code>False</code>，它指定根据该规则从<code>response</code>提取的链接是否需要跟进。如果<code>callback</code>参数为<code>None</code>，<code>follow</code>默认设置为<code>True</code>，否则默认为<code>False</code>。</p>
+</li>
+<li><p><code>process_links</code>：指定处理函数，从<code>link_extractor</code>中获取到链接列表时，该函数将会调用，它主要用于过滤。</p>
+</li>
+<li><p><code>process_request</code>：同样是指定处理函数，根据该Rule提取到每个Request时，该函数都会调用，对Request进行处理。该函数必须返回<code>Request</code>或者<code>None</code>。</p>
+</li>
+</ul>
+<p>以上内容便是CrawlSpider中的核心Rule的基本用法。但这些内容可能还不足以完成一个CrawlSpider爬虫。下面我们利用CrawlSpider实现新闻网站的爬取实例，来更好地理解Rule的用法。</p>
+<h2 id="二、Item-Loader"><a href="#二、Item-Loader" class="headerlink" title="二、Item Loader"></a>二、Item Loader</h2><p>我们了解了利用CrawlSpider的Rule来定义页面的爬取逻辑，这是可配置化的一部分内容。但是，Rule并没有对Item的提取方式做规则定义。对于Item的提取，我们需要借助另一个模块Item Loader来实现。</p>
+<p>Item Loader提供一种便捷的机制来帮助我们方便地提取Item。它提供的一系列API可以分析原始数据对Item进行赋值。Item提供的是保存抓取数据的容器，而Item Loader提供的是填充容器的机制。有了它，数据的提取会变得更加规则化。</p>
+<p>Item Loader的API如下所示：</p>
+<p><strong>class</strong> <strong>scrapy</strong>.<strong>loader</strong>.<strong>ItemLoader</strong>([item, selector, response, ] **kwargs)</p>
+<p>Item Loader的API返回一个新的Item Loader来填充给定的Item。如果没有给出Item，则使用中的类自动实例化<code>default_item_class</code>。另外，它传入<code>selector</code>和<code>response</code>参数来使用选择器或响应参数实例化。</p>
+<p>下面将依次说明Item Loader的API参数。</p>
+<ul>
+<li><code>item</code>：它是<code>Item</code>对象，可以调用<code>add_xpath()</code>、<code>add_css()</code>或<code>add_value()</code>等方法来填充<code>Item</code>对象。</li>
+<li><code>selector</code>：它是<code>Selector</code>对象，用来提取填充数据的选择器。</li>
+<li><code>response</code>：它是<code>Response</code>对象，用于使用构造选择器的Response。</li>
+</ul>
+<p>一个比较典型的Item Loader实例如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scrapy.loader <span class="keyword">import</span> ItemLoader</span><br><span class="line"><span class="keyword">from</span> project.items <span class="keyword">import</span> Product</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(self, response)</span>:</span></span><br><span class="line">   loader = ItemLoader(item=Product(), response=response)</span><br><span class="line">   loader.add_xpath(<span class="string">'name'</span>, <span class="string">'//div[@class="product_name"]'</span>)</span><br><span class="line">   loader.add_xpath(<span class="string">'name'</span>, <span class="string">'//div[@class="product_title"]'</span>)</span><br><span class="line">   loader.add_xpath(<span class="string">'price'</span>, <span class="string">'//p[@id="price"]'</span>)</span><br><span class="line">   loader.add_css(<span class="string">'stock'</span>, <span class="string">'p#stock]'</span>)</span><br><span class="line">   loader.add_value(<span class="string">'last_updated'</span>, <span class="string">'today'</span>)</span><br><span class="line">   <span class="keyword">return</span> loader.load_item()</span><br></pre></td></tr></table></figure>
+
+<p>这里首先声明一个Product Item，用该<code>Item</code>和<code>Response</code>对象实例化<code>ItemLoader</code>，调用<code>add_xpath()</code>方法把来自两个不同位置的数据提取出来，分配给<code>name</code>属性，再用<code>add_xpath()</code>、<code>add_css()</code>、<code>add_value()</code>等方法对不同属性依次赋值，最后调用<code>load_item()</code>方法实现Item的解析。这种方式比较规则化，我们可以把一些参数和规则单独提取出来做成配置文件或存到数据库，即可实现可配置化。</p>
+<p>另外，Item Loader每个字段中都包含了一个Input Processor（输入处理器）和一个Output Processor（输出处理器）。Input Processor收到数据时立刻提取数据，Input Processor的结果被收集起来并且保存在ItemLoader内，但是不分配给Item。收集到所有的数据后，<code>load_item()</code>方法被调用来填充再生成<code>Item</code>对象。在调用时会先调用Output Processor来处理之前收集到的数据，然后再存入Item中，这样就生成了Item。</p>
+<p>下面将介绍一些内置的的Processor。</p>
+<h2 id="1-Identity"><a href="#1-Identity" class="headerlink" title="1. Identity"></a>1. Identity</h2><p><code>Identity</code>是最简单的Processor，不进行任何处理，直接返回原来的数据。</p>
+<h2 id="2-TakeFirst"><a href="#2-TakeFirst" class="headerlink" title="2. TakeFirst"></a>2. TakeFirst</h2><p><code>TakeFirst</code>返回列表的第一个非空值，类似<code>extract_first()</code>的功能，常用作Output Processor，如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scrapy.loader.processors <span class="keyword">import</span> TakeFirst</span><br><span class="line">processor = TakeFirst()</span><br><span class="line">print(processor([<span class="string">''</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]))</span><br></pre></td></tr></table></figure>
+
+<p>输出结果如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>经过此Processor处理后的结果返回了第一个不为空的值。</p>
+<h2 id="3-Join"><a href="#3-Join" class="headerlink" title="3. Join"></a>3. Join</h2><p><code>Join</code>方法相当于字符串的<code>join()</code>方法，可以把列表拼合成字符串，字符串默认使用空格分隔，如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scrapy.loader.processors <span class="keyword">import</span> Join</span><br><span class="line">processor = Join()</span><br><span class="line">print(processor([<span class="string">'one'</span>, <span class="string">'two'</span>, <span class="string">'three'</span>]))</span><br></pre></td></tr></table></figure>
+
+<p>输出结果如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">one two three</span><br></pre></td></tr></table></figure>
+
+<p>它也可以通过参数更改默认的分隔符，例如改成逗号：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scrapy.loader.processors <span class="keyword">import</span> Join</span><br><span class="line">processor = Join(<span class="string">','</span>)</span><br><span class="line">print(processor([<span class="string">'one'</span>, <span class="string">'two'</span>, <span class="string">'three'</span>]))</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">one,two,three</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-Compose"><a href="#4-Compose" class="headerlink" title="4. Compose"></a>4. Compose</h2><p><code>Compose</code>是用给定的多个函数的组合而构造的Processor，每个输入值被传递到第一个函数，其输出再传递到第二个函数，依次类推，直到最后一个函数返回整个处理器的输出，如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scrapy.loader.processors <span class="keyword">import</span> Compose</span><br><span class="line">processor = Compose(str.upper, <span class="keyword">lambda</span> s: s.strip())</span><br><span class="line">print(processor(<span class="string">' hello world'</span>))</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HELLO WORLD</span><br></pre></td></tr></table></figure>
+
+<p>在这里我们构造了一个Compose Processor，传入一个开头带有空格的字符串。Compose Processor的参数有两个：第一个是<code>str.upper</code>，它可以将字母全部转为大写；第二个是一个匿名函数，它调用<code>strip()</code>方法去除头尾空白字符。<code>Compose</code>会顺次调用两个参数，最后返回结果的字符串全部转化为大写并且去除了开头的空格。</p>
+<h2 id="5-MapCompose"><a href="#5-MapCompose" class="headerlink" title="5. MapCompose"></a>5. MapCompose</h2><p>与<code>Compose</code>类似，<code>MapCompose</code>可以迭代处理一个列表输入值，如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scrapy.loader.processors <span class="keyword">import</span> MapCompose</span><br><span class="line">processor = MapCompose(str.upper, <span class="keyword">lambda</span> s: s.strip())</span><br><span class="line">print(processor([<span class="string">'Hello'</span>, <span class="string">'World'</span>, <span class="string">'Python'</span>]))</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="string">'HELLO'</span>, <span class="string">'WORLD'</span>, <span class="string">'PYTHON'</span>]</span><br></pre></td></tr></table></figure>
+
+<p>被处理的内容是一个可迭代对象，<code>MapCompose</code>会将该对象遍历然后依次处理。</p>
+<h2 id="6-SelectJmes"><a href="#6-SelectJmes" class="headerlink" title="6. SelectJmes"></a>6. SelectJmes</h2><p><code>SelectJmes</code>可以查询JSON，传入Key，返回查询所得的Value。不过需要先安装Jmespath库才可以使用它，命令如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install jmespath</span><br></pre></td></tr></table></figure>
+
+<p>安装好Jmespath之后，便可以使用这个Processor了，如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scrapy.loader.processors <span class="keyword">import</span> SelectJmes</span><br><span class="line">proc = SelectJmes(<span class="string">'foo'</span>)</span><br><span class="line">processor = SelectJmes(<span class="string">'foo'</span>)</span><br><span class="line">print(processor(&#123;<span class="string">'foo'</span>: <span class="string">'bar'</span>&#125;))</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bar</span><br></pre></td></tr></table></figure>
+
+<p>以上内容便是一些常用的Processor，在本节的实例中我们会使用Processor来进行数据的处理。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>ww</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://yoursite.com/2019/07/20/通用爬虫/">http://yoursite.com/2019/07/20/通用爬虫/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>good good stady</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/09/05/Docker入门教程/">docker入门教程</a>
+            
+            
+            <a class="next" rel="next" href="/2019/04/22/容器操作命令/">docker容器操作命令</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© ww | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

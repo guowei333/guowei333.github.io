@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+<title>docker基础命令 | </title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">ww</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">ww</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">docker基础命令</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">ww</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">九月 9, 2018&nbsp;&nbsp;17:08:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h3 id="1-run"><a href="#1-run" class="headerlink" title="1. run:"></a>1. <strong>run</strong>:</h3><p><strong>docker run ：</strong>创建一个新的容器并运行一个命令 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-a stdin:</strong> 指定标准输入输出内容类型，可选 STDIN/STDOUT/STDERR 三项；</li>
+<li><strong>-d:</strong> 后台运行容器，并返回容器ID；</li>
+<li><strong>-i:</strong> 以交互模式运行容器，通常与 -t 同时使用；</li>
+<li><strong>-P:</strong> 随机端口映射，容器内部端口<strong>随机</strong>映射到主机的高端口</li>
+<li><strong>-p:</strong> 指定端口映射，格式为：主机(宿主)端口:容器端口</li>
+<li><strong>-t:</strong> 为容器重新分配一个伪输入终端，通常与 -i 同时使用；</li>
+<li><strong>–name=”nginx-lb”:</strong> 为容器指定一个名称；</li>
+<li><strong>–dns 8.8.8.8:</strong> 指定容器使用的DNS服务器，默认和宿主一致；</li>
+<li><strong>–dns-search example.com:</strong> 指定容器DNS搜索域名，默认和宿主一致；</li>
+<li><strong>-h “mars”:</strong> 指定容器的hostname；</li>
+<li><strong>-e username=”ritchie”:</strong> 设置环境变量；</li>
+<li><strong>–env-file=[]:</strong> 从指定文件读入环境变量；</li>
+<li><strong>–cpuset=”0-2” or –cpuset=”0,1,2”:</strong> 绑定容器到指定CPU运行；</li>
+<li><strong>-m :</strong>设置容器使用内存最大值；</li>
+<li><strong>–net=”bridge”:</strong> 指定容器的网络连接类型，支持 bridge/host/none/container: 四种类型；</li>
+<li><strong>–link=[]:</strong> 添加链接到另一个容器；</li>
+<li><strong>–expose=[]:</strong> 开放一个端口或一组端口；<br>   <strong>–volume , -v:</strong>    绑定一个卷</li>
+</ul>
+<h4 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h4><p>使用docker镜像nginx:latest以后台模式启动一个容器,并将容器命名为mynginx。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name mynginx -d nginx:latest</span><br></pre></td></tr></table></figure>
+
+<p>使用镜像nginx:latest以后台模式启动一个容器,并将容器的80端口映射到主机随机端口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -P -d nginx:latest</span><br></pre></td></tr></table></figure>
+
+<p>使用镜像 nginx:latest，以后台模式启动一个容器,将容器的 80 端口映射到主机的 80 端口,主机的目录 /data 映射到容器的 /data。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 80:80 -v /data:/data -d nginx:latest</span><br></pre></td></tr></table></figure>
+
+<p>绑定容器的 8080 端口，并将其映射到本地主机 127.0.0.1 的 80 端口上。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -p 127.0.0.1:80:8080/tcp ubuntu bash</span><br></pre></td></tr></table></figure>
+
+<p>使用镜像nginx:latest以交互模式启动一个容器,在容器内执行/bin/bash命令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ docker run -it nginx:latest /bin/bash</span><br><span class="line">root@b8573233d675:/#</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><h3 id="start-stop-restart-命令"><a href="#start-stop-restart-命令" class="headerlink" title="start/stop/restart 命令"></a>start/stop/restart 命令</h3><p><strong>docker start</strong> :启动一个或多个已经被停止的容器</p>
+<p><strong>docker stop</strong> :停止一个运行中的容器</p>
+<p><strong>docker restart</strong> :重启容器</p>
+</li>
+</ol>
+<h4 id="实例-1"><a href="#实例-1" class="headerlink" title="实例"></a>实例</h4><p>   启动已被停止的容器myrunoob</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker start myrunoob</span><br></pre></td></tr></table></figure>
+
+<p>   停止运行中的容器myrunoob</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop myrunoob</span><br></pre></td></tr></table></figure>
+
+<p>   重启容器myrunoob</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker restart myrunoob</span><br></pre></td></tr></table></figure>
+
+<p>​    </p>
+<ol start="3">
+<li><h3 id="kill-命令"><a href="#kill-命令" class="headerlink" title="kill 命令"></a>kill 命令</h3><p><strong>docker kill</strong> :杀掉一个运行中的容器。 </p>
+<p><strong>-s :</strong>向容器发送一个信号 </p>
+<h5 id="实例-2"><a href="#实例-2" class="headerlink" title="实例"></a>实例</h5><p>杀掉运行中的容器mynginx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ docker kill -s KILL mynginx</span><br><span class="line">mynginx</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="rm-命令"><a href="#rm-命令" class="headerlink" title="rm 命令"></a>rm 命令</h3><p><strong>docker rm ：</strong>删除一个或多少容器 </p>
+<h5 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm [OPTIONS] CONTAINER [CONTAINER...]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-f :</strong>通过SIGKILL信号强制删除一个运行中的容器</li>
+<li><strong>-l :</strong>移除容器间的网络连接，而非容器本身</li>
+<li><strong>-v :</strong>-v 删除与容器关联的卷</li>
+</ul>
+</li>
+</ol>
+<h4 id="实例-3"><a href="#实例-3" class="headerlink" title="实例"></a>实例</h4><p>​    强制删除容器db01、db02</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm -f db01 db02</span><br></pre></td></tr></table></figure>
+
+<p>​    移除容器nginx01对容器db01的连接，连接名db</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm -l db</span><br></pre></td></tr></table></figure>
+
+<p>​    删除容器nginx01,并删除容器挂载的数据卷</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm -v nginx01</span><br></pre></td></tr></table></figure>
+
+<p>​    </p>
+<ol start="5">
+<li><h3 id="pause-unpause-命令"><a href="#pause-unpause-命令" class="headerlink" title="pause/unpause 命令"></a>pause/unpause 命令</h3><p><strong>docker pause</strong> :暂停容器中所有的进程。</p>
+<p><strong>docker unpause</strong> :恢复容器中所有的进程。</p>
+</li>
+</ol>
+<h5 id="实例-4"><a href="#实例-4" class="headerlink" title="实例"></a>实例</h5><p>暂停数据库容器db01提供服务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pause db01</span><br></pre></td></tr></table></figure>
+
+<p>恢复数据库容器db01提供服务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker unpause db01</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li><h3 id="create-命令"><a href="#create-命令" class="headerlink" title="create 命令"></a>create 命令</h3><p><strong>docker create ：</strong>创建一个新的容器但不启动它 </p>
+</li>
+</ol>
+<p>​    用法同 <a href="https://www.runoob.com/docker/docker-run-command.html" target="_blank" rel="noopener">docker run</a> </p>
+<ol start="7">
+<li><h3 id="exec命令"><a href="#exec命令" class="headerlink" title="exec命令"></a>exec命令</h3><p><strong>docker exec ：</strong>在运行的容器中执行命令 </p>
+<h5 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec [OPTIONS] CONTAINER COMMAND [ARG...]</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>​    OPTIONS说明：</p>
+<ul>
+<li><strong>-d :</strong>分离模式: 在后台运行</li>
+<li><strong>-i :</strong>即使没有附加也保持STDIN 打开</li>
+<li><strong>-t :</strong>分配一个伪终端</li>
+</ul>
+<h4 id="实例-5"><a href="#实例-5" class="headerlink" title="实例"></a>实例</h4><p>在容器 mynginx 中以交互模式执行容器内 /root/runoob.sh 脚本:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ docker exec -it mynginx /bin/sh /root/runoob.sh</span><br><span class="line">http://www.runoob.com/</span><br></pre></td></tr></table></figure>
+
+<p>在容器 mynginx 中开启一个交互模式的终端:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ docker exec -i -t  mynginx /bin/bash</span><br><span class="line">root@b1a0703e41e7:/#</span><br></pre></td></tr></table></figure>
+
+<p>也可以通过 docker ps -a 命令查看已经在运行的容器，然后使用容器 ID 进入容器。</p>
+<p>查看已经在运行的容器 ID：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># docker ps -a </span><br><span class="line">...</span><br><span class="line">9df70f9a0714        openjdk             &quot;/usercode/script.sh…&quot; </span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>第一列的 9df70f9a0714 就是容器 ID。</p>
+<p>通过 exec 命令对指定的容器执行 bash:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># docker exec -it 9df70f9a0714 /bin/bash</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-ps"><a href="#1-ps" class="headerlink" title="1. ps"></a>1. ps</h3><p>​    <strong>docker ps :</strong> 列出容器 </p>
+<h3 id="语法-2"><a href="#语法-2" class="headerlink" title="语法"></a>语法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps [OPTIONS]</span><br></pre></td></tr></table></figure>
+
+<p>​    OPTIONS说明：</p>
+<ul>
+<li><p><strong>-a :</strong>显示所有的容器，包括未运行的。</p>
+</li>
+<li><p><strong>-f :</strong>根据条件过滤显示的内容。</p>
+</li>
+</ul>
+<ul>
+<li><p><strong>–format :</strong>指定返回值的模板文件。</p>
+</li>
+<li><p><strong>-l :</strong>显示最近创建的容器。</p>
+</li>
+<li><p><strong>-n :</strong>列出最近创建的n个容器。</p>
+</li>
+<li><p><strong>–no-trunc :</strong>不截断输出。</p>
+</li>
+<li><p><strong>-q :</strong>静默模式，只显示容器编号。</p>
+</li>
+<li><p><strong>-s :</strong>显示总的文件大小。</p>
+</li>
+</ul>
+<h3 id="实例-6"><a href="#实例-6" class="headerlink" title="实例"></a>实例</h3><p>列出所有在运行的容器信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+
+<p>列出最近创建的5个容器信息。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -n 5</span><br></pre></td></tr></table></figure>
+
+<p>列出所有创建的容器ID。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a -q</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-inspect"><a href="#2-inspect" class="headerlink" title="2. inspect"></a>2. inspect</h3><p><strong>docker inspect :</strong> 获取容器/镜像的元数据。 </p>
+<h4 id="语法-3"><a href="#语法-3" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker inspect [OPTIONS] NAME|ID [NAME|ID...]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-f :</strong>指定返回值的模板文件。</li>
+<li><strong>-s :</strong>显示总的文件大小。</li>
+<li><strong>–type :</strong>为指定类型返回JSON。</li>
+</ul>
+<h4 id="实例-7"><a href="#实例-7" class="headerlink" title="实例"></a>实例</h4><p>获取镜像mysql:5.6的元信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker inspect mysql:5.6</span><br></pre></td></tr></table></figure>
+
+<p>获取正在运行的容器mymysql的 IP。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker inspect --format=&apos;&#123;&#123;range .NetworkSettings.Networks&#125;&#125;&#123;&#123;.IPAddress&#125;&#125;&#123;&#123;end&#125;&#125;&apos; mymysql</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-top"><a href="#3-top" class="headerlink" title="3.top"></a>3.top</h3><p><strong>docker top :</strong>查看容器中运行的进程信息，支持 ps 命令参数。 </p>
+<h4 id="语法-4"><a href="#语法-4" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker top [OPTIONS] CONTAINER [ps OPTIONS]</span><br></pre></td></tr></table></figure>
+
+<p>容器运行时不一定有/bin/bash终端来交互执行top命令，而且容器还不一定有top命令，可以使用docker top来实现查看container中正在运行的进程。 </p>
+<h4 id="实例-8"><a href="#实例-8" class="headerlink" title="实例"></a>实例</h4><p>查看容器mymysql的进程信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker top mymysql</span><br></pre></td></tr></table></figure>
+
+<p>查看所有运行容器的进程信息。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for i in  `docker ps |grep Up|awk &apos;&#123;print $1&#125;&apos;`;do echo \ &amp;&amp;docker top $i; done</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-events"><a href="#4-events" class="headerlink" title="4.events"></a>4.events</h3><p><strong>docker events :</strong> 从服务器获取实时事件 </p>
+<h4 id="语法-5"><a href="#语法-5" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker events [OPTIONS]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-f ：</strong>根据条件过滤事件；</li>
+<li><strong>–since ：</strong>从指定的时间戳后显示所有事件;</li>
+<li><strong>–until ：</strong>流水时间显示到指定的时间为止；</li>
+</ul>
+<h4 id="实例-9"><a href="#实例-9" class="headerlink" title="实例"></a>实例</h4><p>显示docker 2016年7月1日后的所有事件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker events  --since=&quot;1467302400&quot;</span><br></pre></td></tr></table></figure>
+
+<p>显示docker 镜像为mysql:5.6 2016年7月1日后的相关事件。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker events -f &quot;image&quot;=&quot;mysql:5.6&quot; --since=&quot;1467302400&quot;</span><br></pre></td></tr></table></figure>
+
+<p>如果指定的时间是到秒级的，需要将时间转成时间戳。如果时间为日期的话，可以直接使用，如–since=”2016-07-01”。 </p>
+<h3 id="5-logs"><a href="#5-logs" class="headerlink" title="5.logs"></a>5.logs</h3><p><strong>docker logs :</strong> 获取容器的日志 </p>
+<h4 id="语法-6"><a href="#语法-6" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs [OPTIONS] CONTAINER</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-f :</strong> 跟踪日志输出</li>
+<li><strong>–since :</strong>显示某个开始时间的所有日志</li>
+<li><strong>-t :</strong> 显示时间戳</li>
+<li><strong>–tail :</strong>仅列出最新N条容器日志</li>
+</ul>
+<h4 id="实例-10"><a href="#实例-10" class="headerlink" title="实例"></a>实例</h4><p>跟踪查看容器mynginx的日志输出。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs -f mynginx</span><br></pre></td></tr></table></figure>
+
+<p>查看容器mynginx从2016年7月1日后的最新10条日志。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs --since=&quot;2016-07-01&quot; --tail=10 mynginx</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-wait"><a href="#6-wait" class="headerlink" title="6.wait"></a>6.wait</h3><p><strong>docker wait :</strong> 阻塞运行直到容器停止，然后打印出它的退出代码。 </p>
+<h4 id="语法-7"><a href="#语法-7" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker wait [OPTIONS] CONTAINER [CONTAINER...]</span><br></pre></td></tr></table></figure>
+
+<h4 id="实例-11"><a href="#实例-11" class="headerlink" title="实例"></a>实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker wait CONTAINER</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-export"><a href="#7-export" class="headerlink" title="7.export"></a>7.export</h3><p><strong>docker export :</strong>将文件系统作为一个tar归档文件导出到STDOUT。 </p>
+<h4 id="语法-8"><a href="#语法-8" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker export [OPTIONS] CONTAINER</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-o :</strong>将输入内容写到文件。</li>
+</ul>
+<h4 id="实例-12"><a href="#实例-12" class="headerlink" title="实例"></a>实例</h4><p>将id为a404c6c174a2的容器按日期保存为tar文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker export -o mysql-`date +%Y%m%d`.tar a404c6c174a2</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls mysql-`date +%Y%m%d`.tar</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-port"><a href="#8-port" class="headerlink" title="8.port"></a>8.port</h3><p><strong>docker port :</strong>列出指定的容器的端口映射，或者查找将PRIVATE_PORT NAT到面向公众的端口。 </p>
+<h4 id="语法-9"><a href="#语法-9" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker port [OPTIONS] CONTAINER [PRIVATE_PORT[/PROTO]]</span><br></pre></td></tr></table></figure>
+
+<h4 id="实例-13"><a href="#实例-13" class="headerlink" title="实例"></a>实例</h4><p>查看容器mynginx的端口映射情况。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ docker port mymysql</span><br><span class="line">3306/tcp -&gt; 0.0.0.0:3306</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-Docker-commit-命令"><a href="#1-Docker-commit-命令" class="headerlink" title="1.Docker commit 命令"></a>1.Docker commit 命令</h3><p><strong>docker commit :</strong>从容器创建一个新的镜像。 </p>
+<h4 id="语法-10"><a href="#语法-10" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-a :</strong>提交的镜像作者；</li>
+</ul>
+<ul>
+<li><strong>-c :</strong>使用Dockerfile指令来创建镜像；</li>
+</ul>
+<ul>
+<li><strong>-m :</strong>提交时的说明文字；</li>
+</ul>
+<ul>
+<li><strong>-p :</strong>在commit时，将容器暂停。</li>
+</ul>
+<h4 id="实例-14"><a href="#实例-14" class="headerlink" title="实例"></a>实例</h4><p>将容器a404c6c174a2 保存为新的镜像,并添加提交人信息和说明信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker commit -a &quot;runoob.com&quot; -m &quot;my apache&quot; a404c6c174a2  mymysql:v1 </span><br><span class="line">sha256:37af1236adef1544e8886be23010b66577647a40bc02c0885a6600b33ee28057</span><br><span class="line"></span><br><span class="line">docker images mymysql:v1</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-cp"><a href="#2-cp" class="headerlink" title="2.cp"></a>2.cp</h3><p><strong>docker cp :</strong>用于容器与主机之间的数据拷贝。 </p>
+<h4 id="语法-11"><a href="#语法-11" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-L :</strong>保持源目标中的链接</li>
+</ul>
+<h4 id="实例-15"><a href="#实例-15" class="headerlink" title="实例"></a>实例</h4><p>将主机/www/runoob目录拷贝到容器96f7f14e99ab的/www目录下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp /www/runoob 96f7f14e99ab:/www/</span><br></pre></td></tr></table></figure>
+
+<p>将主机/www/runoob目录拷贝到容器96f7f14e99ab中，目录重命名为www。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp /www/runoob 96f7f14e99ab:/www</span><br></pre></td></tr></table></figure>
+
+<p>将容器96f7f14e99ab的/www目录拷贝到主机的/tmp目录中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp  96f7f14e99ab:/www /tmp/</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-diff"><a href="#3-diff" class="headerlink" title="3.diff"></a>3.diff</h3><p><strong>docker diff :</strong> 检查容器里文件结构的更改。</p>
+<h4 id="语法-12"><a href="#语法-12" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker diff [OPTIONS] CONTAINER</span><br></pre></td></tr></table></figure>
+
+<h4 id="实例-16"><a href="#实例-16" class="headerlink" title="实例"></a>实例</h4><p>查看容器mymysql的文件结构更改。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ docker diff mymysql</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-login-logout"><a href="#1-login-logout" class="headerlink" title="1.login/logout"></a>1.login/logout</h3><p><strong>docker login :</strong> 登陆到一个Docker镜像仓库，如果未指定镜像仓库地址，默认为官方仓库 Docker Hub</p>
+<p><strong>docker logout :</strong> 登出一个Docker镜像仓库，如果未指定镜像仓库地址，默认为官方仓库 Docker Hub</p>
+<h4 id="语法-13"><a href="#语法-13" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker login [OPTIONS] [SERVER]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logout [OPTIONS] [SERVER]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-u :</strong>登陆的用户名</li>
+<li><strong>-p :</strong>登陆的密码</li>
+</ul>
+<h4 id="实例-17"><a href="#实例-17" class="headerlink" title="实例"></a>实例</h4><p>登陆到Docker Hub</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker login -u 用户名 -p 密码</span><br></pre></td></tr></table></figure>
+
+<p>登出Docker Hub</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logout</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-push"><a href="#2-push" class="headerlink" title="2.push"></a>2.push</h3><p><strong>docker push :</strong> 将本地的镜像上传到镜像仓库,要先登陆到镜像仓库 </p>
+<h4 id="语法-14"><a href="#语法-14" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push [OPTIONS] NAME[:TAG]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>–disable-content-trust :</strong>忽略镜像的校验,默认开启</li>
+</ul>
+<h4 id="实例-18"><a href="#实例-18" class="headerlink" title="实例"></a>实例</h4><p>上传本地镜像myapache:v1到镜像仓库中。</p>
+<p>docker push myapache:v1</p>
+<h3 id="3-search"><a href="#3-search" class="headerlink" title="3.search"></a>3.search</h3><p><strong>docker search :</strong> 从Docker Hub查找镜像</p>
+<h4 id="语法-15"><a href="#语法-15" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker search [OPTIONS] TERM</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>–automated :</strong>只列出 automated build类型的镜像；</li>
+<li><strong>–no-trunc :</strong>显示完整的镜像描述；</li>
+<li><strong>-s :</strong>列出收藏数不小于指定值的镜像。</li>
+</ul>
+<h4 id="实例-19"><a href="#实例-19" class="headerlink" title="实例"></a>实例</h4><p>从Docker Hub查找所有镜像名包含java，并且收藏数大于10的镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ docker search -s 10 java</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-images"><a href="#1-images" class="headerlink" title="1.images"></a>1.images</h3><p><strong>docker images :</strong> 列出本地镜像。 </p>
+<h4 id="语法-16"><a href="#语法-16" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images [OPTIONS] [REPOSITORY[:TAG]]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-a :</strong>列出本地所有的镜像（含中间映像层，默认情况下，过滤掉中间映像层）；</li>
+</ul>
+<ul>
+<li><strong>–digests :</strong>显示镜像的摘要信息；</li>
+</ul>
+<ul>
+<li><strong>-f :</strong>显示满足条件的镜像；</li>
+</ul>
+<ul>
+<li><strong>–format :</strong>指定返回值的模板文件；</li>
+</ul>
+<ul>
+<li><strong>–no-trunc :</strong>显示完整的镜像信息；</li>
+</ul>
+<ul>
+<li><strong>-q :</strong>只显示镜像ID。</li>
+</ul>
+<h4 id="实例-20"><a href="#实例-20" class="headerlink" title="实例"></a>实例</h4><p>查看本地镜像列表。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+
+<p>列出本地镜像中REPOSITORY为ubuntu的镜像列表。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images  ubuntu</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-rmi"><a href="#2-rmi" class="headerlink" title="2.rmi"></a>2.rmi</h3><p><strong>docker rmi :</strong> 删除本地一个或多少镜像。 </p>
+<h4 id="语法-17"><a href="#语法-17" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi [OPTIONS] IMAGE [IMAGE...]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-f :</strong>强制删除；</li>
+</ul>
+<ul>
+<li><strong>–no-prune :</strong>不移除该镜像的过程镜像，默认移除；</li>
+</ul>
+<h4 id="实例-21"><a href="#实例-21" class="headerlink" title="实例"></a>实例</h4><p>强制删除本地镜像 runoob/ubuntu:v4。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi -f runoob/ubuntu:v4</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-tag"><a href="#3-tag" class="headerlink" title="3.tag"></a>3.tag</h3><p><strong>docker tag :</strong> 标记本地镜像，将其归入某一仓库。 </p>
+<h4 id="语法-18"><a href="#语法-18" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker tag [OPTIONS] IMAGE[:TAG] [REGISTRYHOST/][USERNAME/]NAME[:TAG]</span><br></pre></td></tr></table></figure>
+
+<h4 id="实例-22"><a href="#实例-22" class="headerlink" title="实例"></a>实例</h4><p>将镜像ubuntu:15.10标记为 runoob/ubuntu:v3 镜像。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@runoob:~# docker tag ubuntu:15.10 runoob/ubuntu:v3</span><br><span class="line">root@runoob:~# docker images   runoob/ubuntu:v3</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-build"><a href="#4-build" class="headerlink" title="4.build"></a>4.build</h3><p><strong>docker build</strong> 命令用于使用 Dockerfile 创建镜像。 </p>
+<h4 id="语法-19"><a href="#语法-19" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build [OPTIONS] PATH | URL | -</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>–build-arg=[] :</strong>设置镜像创建时的变量；</li>
+<li><strong>–cpu-shares :</strong>设置 cpu 使用权重；</li>
+<li><strong>–cpu-period :</strong>限制 CPU CFS周期；</li>
+<li><strong>–cpu-quota :</strong>限制 CPU CFS配额；</li>
+<li><strong>–cpuset-cpus :</strong>指定使用的CPU id；</li>
+<li><strong>–cpuset-mems :</strong>指定使用的内存 id；</li>
+<li><strong>–disable-content-trust :</strong>忽略校验，默认开启；</li>
+<li><strong>-f :</strong>指定要使用的Dockerfile路径；</li>
+<li><strong>–force-rm :</strong>设置镜像过程中删除中间容器；</li>
+<li><strong>–isolation :</strong>使用容器隔离技术；</li>
+<li><strong>–label=[] :</strong>设置镜像使用的元数据；</li>
+<li><strong>-m :</strong>设置内存最大值；</li>
+<li><strong>–memory-swap :</strong>设置Swap的最大值为内存+swap，”-1”表示不限swap；</li>
+<li><strong>–no-cache :</strong>创建镜像的过程不使用缓存；</li>
+<li><strong>–pull :</strong>尝试去更新镜像的新版本；</li>
+<li><strong>–quiet, -q :</strong>安静模式，成功后只输出镜像 ID；</li>
+<li><strong>–rm :</strong>设置镜像成功后删除中间容器；</li>
+<li><strong>–shm-size :</strong>设置/dev/shm的大小，默认值是64M；</li>
+<li><strong>–ulimit :</strong>Ulimit配置。</li>
+<li><strong>–tag, -t:</strong> 镜像的名字及标签，通常 name:tag 或者 name 格式；可以在一次构建中为一个镜像设置多个标签。</li>
+<li><strong>–network:</strong> 默认 default。在构建期间设置RUN指令的网络模式</li>
+</ul>
+<h4 id="实例-23"><a href="#实例-23" class="headerlink" title="实例"></a>实例</h4><p>使用当前目录的 Dockerfile 创建镜像，标签为 runoob/ubuntu:v1。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t runoob/ubuntu:v1 .</span><br></pre></td></tr></table></figure>
+
+<p>使用URL <strong>github.com/creack/docker-firefox</strong> 的 Dockerfile 创建镜像。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build github.com/creack/docker-firefox</span><br></pre></td></tr></table></figure>
+
+<p>也可以通过 -f Dockerfile 文件的位置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -f /path/to/a/Dockerfile .</span><br></pre></td></tr></table></figure>
+
+<p>在 Docker 守护进程执行 Dockerfile 中的指令前，首先会对 Dockerfile 进行语法检查，有语法错误时会返回：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t test/myapp .</span><br><span class="line">Sending build context to Docker daemon 2.048 kB</span><br><span class="line">Error response from daemon: Unknown instruction: RUNCMD</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-history"><a href="#5-history" class="headerlink" title="5.history"></a>5.history</h3><p><strong>docker history :</strong> 查看指定镜像的创建历史。</p>
+<h4 id="语法-20"><a href="#语法-20" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker history [OPTIONS] IMAGE</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-H :</strong>以可读的格式打印镜像大小和日期，默认为true；</li>
+</ul>
+<ul>
+<li><strong>–no-trunc :</strong>显示完整的提交记录；</li>
+</ul>
+<ul>
+<li><strong>-q :</strong>仅列出提交记录ID。</li>
+</ul>
+<h4 id="实例-24"><a href="#实例-24" class="headerlink" title="实例"></a>实例</h4><p>查看本地镜像runoob/ubuntu:v3的创建历史。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker history runoob/ubuntu:v3</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-save"><a href="#6-save" class="headerlink" title="6.save"></a>6.save</h3><p><strong>docker save :</strong> 将指定镜像保存成 tar 归档文件。 </p>
+<h4 id="语法-21"><a href="#语法-21" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker save [OPTIONS] IMAGE [IMAGE...]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS 说明：</p>
+<ul>
+<li><strong>-o :</strong>输出到的文件。</li>
+</ul>
+<h4 id="实例-25"><a href="#实例-25" class="headerlink" title="实例"></a>实例</h4><p>将镜像 runoob/ubuntu:v3 生成 my_ubuntu_v3.tar 文档</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ docker save -o my_ubuntu_v3.tar runoob/ubuntu:v3</span><br><span class="line">runoob@runoob:~$ ll my_ubuntu_v3.tar</span><br><span class="line">-rw------- 1 runoob runoob 142102016 Jul 11 01:37 my_ubuntu_v3.ta</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-load"><a href="#7-load" class="headerlink" title="7.load"></a>7.load</h3><p><strong>docker load :</strong> 导入使用 <a href="https://www.runoob.com/docker/docker-save-command.html" target="_blank" rel="noopener">docker save</a> 命令导出的镜像。 </p>
+<h4 id="语法-22"><a href="#语法-22" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker load [OPTIONS]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS 说明：</p>
+<ul>
+<li><strong>-i :</strong>指定导出的文件。</li>
+<li><strong>-q :</strong>精简输出信息。</li>
+</ul>
+<h4 id="实例-26"><a href="#实例-26" class="headerlink" title="实例"></a>实例</h4><p>导入镜像：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker load -i ubuntu.tar</span><br><span class="line">docker load &lt; ubuntu.tar</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-import"><a href="#8-import" class="headerlink" title="8.import"></a>8.import</h3><p><strong>docker import :</strong> 从归档文件中创建镜像。 </p>
+<h4 id="语法-23"><a href="#语法-23" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker import [OPTIONS] file|URL|- [REPOSITORY[:TAG]]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><p><strong>-c :</strong>应用docker 指令创建镜像；</p>
+</li>
+<li><p><strong>-m :</strong>提交时的说明文字；</p>
+</li>
+</ul>
+<h4 id="实例-27"><a href="#实例-27" class="headerlink" title="实例"></a>实例</h4><p>从镜像归档文件my_ubuntu_v3.tar创建镜像，命名为runoob/ubuntu:v4</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ docker import  my_ubuntu_v3.tar runoob/ubuntu:v4  </span><br><span class="line">sha256:63ce4a6d6bc3fabb95dbd6c561404a309b7bdfc4e21c1d59fe9fe4299cbfea39</span><br><span class="line">runoob@runoob:~$ docker images runoob/ubuntu:v4</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">runoob/ubuntu       v4                  63ce4a6d6bc3        20 seconds ago      142.1 MB</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-info"><a href="#1-info" class="headerlink" title="1.info"></a>1.info</h3><p>docker info : 显示 Docker 系统信息，包括镜像和容器数。。 </p>
+<h4 id="语法-24"><a href="#语法-24" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker info [OPTIONS]</span><br></pre></td></tr></table></figure>
+
+<h4 id="实例-28"><a href="#实例-28" class="headerlink" title="实例"></a>实例</h4><p>查看docker系统信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker info</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-version"><a href="#2-version" class="headerlink" title="2.version"></a>2.version</h3><p>docker version :显示 Docker 版本信息。 </p>
+<h4 id="语法-25"><a href="#语法-25" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker version [OPTIONS]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS说明：</p>
+<ul>
+<li><strong>-f :</strong>指定返回值的模板文件。</li>
+</ul>
+<h4 id="实例-29"><a href="#实例-29" class="headerlink" title="实例"></a>实例</h4><p>显示 Docker 版本信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>ww</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://yoursite.com/2018/09/09/1基础命令详解/">http://yoursite.com/2018/09/09/1基础命令详解/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>good good stady</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Docker/"># Docker</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/09/11/2镜像操作命令/">docker镜像操作命令</a>
+            
+            
+            <a class="next" rel="next" href="/2018/07/10/NumPy 数组属性/">numpy数组属性</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© ww | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

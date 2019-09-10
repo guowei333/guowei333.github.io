@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+<title>linux安装git | </title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">ww</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">ww</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">linux安装git</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">ww</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">五月 7, 2017&nbsp;&nbsp;13:07:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h3 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h3><h5 id="1-安装"><a href="#1-安装" class="headerlink" title="1.安装"></a>1.安装</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y git</span><br></pre></td></tr></table></figure>
+
+<p>#####2.查看版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git --version</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-安装所需软件包"><a href="#3-安装所需软件包" class="headerlink" title="3.安装所需软件包"></a>3.安装所需软件包</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc-c++ perl-ExtUtils-MakeMaker autoconf automake libtool</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-下载-amp-安装-amp-解压"><a href="#4-下载-amp-安装-amp-解压" class="headerlink" title="4.下载 &amp; 安装 &amp; 解压"></a>4.下载 &amp; 安装 &amp; 解压</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/src</span><br><span class="line">wget https://www.kernel.org/pub/software/scm/git/git-2.7.3.tar.gz</span><br><span class="line">tar -xvzf git-2.7.3.tar.gz</span><br></pre></td></tr></table></figure>
+
+<h5 id="5-配置编译安装"><a href="#5-配置编译安装" class="headerlink" title="5.配置编译安装"></a>5.配置编译安装</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd git-2.7.3</span><br><span class="line">./configure --prefix=/usr/local/app/git ##配置目录</span><br><span class="line">make profix=/usr/local/app/git</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-加入环境变量"><a href="#6-加入环境变量" class="headerlink" title="6.加入环境变量"></a>6.加入环境变量</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/profile</span><br></pre></td></tr></table></figure>
+
+<h5 id="7-添加如下配置"><a href="#7-添加如下配置" class="headerlink" title="7.添加如下配置"></a>7.添加如下配置</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Git Config</span><br><span class="line">export GIT_HOME=/usr/local/app/git</span><br><span class="line">export PATH=$GIT_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+
+<h5 id="8-让配置生效"><a href="#8-让配置生效" class="headerlink" title="8.让配置生效"></a>8.让配置生效</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># source /etc/profile</span><br></pre></td></tr></table></figure>
+
+<h5 id="9-检查版本"><a href="#9-检查版本" class="headerlink" title="9.检查版本"></a>9.检查版本</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># git --version</span><br></pre></td></tr></table></figure>
+
+<h3 id="Git-配置"><a href="#Git-配置" class="headerlink" title="Git 配置"></a>Git 配置</h3><p>Git 提供了一个叫做 git config 的工具，专门用来配置或读取相应的工作环境变量。</p>
+<p>这些环境变量，决定了 Git 在各个环节的具体工作方式和行为。这些变量可以存放在以下三个不同的地方：</p>
+<ul>
+<li>/etc/gitconfig 文件：系统中对所有用户都普遍适用的配置。若使用 git config 时用 –system 选项，读写的就是这个文件。</li>
+<li>~/.gitconfig 文件：用户目录下的配置文件只适用于该用户。若使用 git config 时用 –global 选项，读写的就是这个文件。</li>
+<li>当前项目的 Git 目录中的配置文件（也就是工作目录中的 .git/config 文件）：这里的配置仅仅针对当前项目有效。每一个级别的配置都会覆盖上层的相同配置，所以 .git/config 里的配置会覆盖 /etc/gitconfig 中的同名变量。</li>
+</ul>
+<p>在 Windows 系统上，Git 会找寻用户主目录下的 .gitconfig 文件。主目录即 <code>$HOME</code> 变量指定的目录，一般都是 <code>C:\Documents and Settings\$USER</code></p>
+<p>此外，Git 还会尝试找寻 /etc/gitconfig 文件，只不过看当初 Git 装在什么目录，就以此作为根目录来定位。</p>
+<h4 id="1-用户信息"><a href="#1-用户信息" class="headerlink" title="1.用户信息"></a>1.用户信息</h4><p>配置个人的用户名称和电子邮件地址：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;sll_git&quot;</span><br><span class="line">git config --global user.email &quot;2522908520@qq.com&quot;</span><br></pre></td></tr></table></figure>
+
+<p>如果用了 –global 选项，那么更改的配置文件就是位于你用户主目录下的那个，以后你所有的项目都会默认使用这里配置的用户信息。</p>
+<p>如果要在某个特定的项目中使用其他名字或者电邮，只要去掉 –global 选项重新配置即可，新的设定保存在当前项目的 .git/config 文件里。</p>
+<h4 id="2-文本编辑器"><a href="#2-文本编辑器" class="headerlink" title="2.文本编辑器"></a>2.文本编辑器</h4><p>设置Git默认使用的文本编辑器, 一般可能会是 Vi 或者 Vim。如果你有其他偏好，比如 Emacs 的话，可以重新设置：:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global core.editor vim</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-差异分析工具"><a href="#3-差异分析工具" class="headerlink" title="3.差异分析工具"></a>3.差异分析工具</h4><p>还有一个比较常用的是，在解决合并冲突时使用哪种差异分析工具。比如要改用 vimdiff 的话：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global merge.tool vimdiff</span><br></pre></td></tr></table></figure>
+
+<p>Git 可以理解 kdiff3，tkdiff，meld，xxdiff，emerge，vimdiff，gvimdiff，ecmerge，和 opendiff 等合并工具的输出信息。</p>
+<p>当然，你也可以指定使用自己开发的工具，具体怎么做可以参阅第七章。</p>
+<h4 id="4-查看配置信息"><a href="#4-查看配置信息" class="headerlink" title="4.查看配置信息"></a>4.查看配置信息</h4><p>要检查已有的配置信息，可以使用 git config –list 命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git config --list</span><br><span class="line">http.postbuffer=2M</span><br><span class="line">user.name=runoob</span><br><span class="line">user.email=test@runoob.com</span><br></pre></td></tr></table></figure>
+
+<p>有时候会看到重复的变量名，那就说明它们来自不同的配置文件（比如 /etc/gitconfig 和 ~/.gitconfig），不过最终 Git 实际采用的是最后一个。</p>
+<p>这些配置我们也可以在 ~/.gitconfig 或 /etc/gitconfig 看到，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.gitconfig</span><br></pre></td></tr></table></figure>
+
+<p>显示内容如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[http]</span><br><span class="line">    postBuffer = 2M</span><br><span class="line">[user]</span><br><span class="line">    name = runoob</span><br><span class="line">    email = test@runoob.com</span><br></pre></td></tr></table></figure>
+
+<p>也可以直接查阅某个环境变量的设定，只要把特定的名字跟在后面即可，像这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config user.name</span><br><span class="line">runoob</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-生成公钥和私钥"><a href="#5-生成公钥和私钥" class="headerlink" title="5.生成公钥和私钥"></a>5.生成公钥和私钥</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">// 没有配置用户信息，先配置用户信息</span><br><span class="line"># git config --global user.name &quot;sll_git&quot;</span><br><span class="line"># git config --global user.email &quot;2522908520@qq.com&quot;</span><br><span class="line"># ssh-keygen -t rsa -C &quot;2522908520@qq.com&quot;</span><br><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file in which to save the key (/root/.ssh/id_rsa):   # 输入保存目录，默认 ~/.ssh/id_rsa</span><br><span class="line">/root/.ssh/id_rsa already exists.      # 如果已经存在文件，会提示 是否覆盖</span><br><span class="line">Overwrite (y/n)? y </span><br><span class="line">Enter passphrase (empty for no passphrase):  # 输入访问该公钥/私钥 的密码，可以为空 (在使用时，会提示输入改密码)</span><br><span class="line">Enter same passphrase again:</span><br><span class="line">Your identification has been saved in /root/.ssh/id_rsa.</span><br><span class="line">Your public key has been saved in /root/.ssh/id_rsa.pub.</span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:Cc3R8+oO557jppbl67RgDhuHstaxrZdrddcktS8f5bI vwFifhserAli@qq.com</span><br><span class="line">The key&apos;s randomart image is:</span><br><span class="line">+---[RSA 2048]----+</span><br><span class="line">|        ..       |</span><br><span class="line">|       o .o     .|</span><br><span class="line">|      . o  o   ..|</span><br><span class="line">|       . .  . ..o|</span><br><span class="line">|        S  .   =o|</span><br><span class="line">|      ..  + . +.+|</span><br><span class="line">|    ..++=Bo. . =.|</span><br><span class="line">|    .ooBB*=o  E .|</span><br><span class="line">|   .. o=+OXo     |</span><br><span class="line">+----[SHA256]-----+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 修改 私钥密码</span><br><span class="line"># cd ~/.ssh/</span><br><span class="line"># ssh-keygen -f id_rsa -p</span><br><span class="line">Enter old passphrase:   # 输入旧密码</span><br><span class="line">Enter new passphrase (empty for no passphrase):  ## 输入新密码</span><br><span class="line">Enter same passphrase again:  ## 输入新密码</span><br><span class="line">Your identification has been saved with the new passphrase.</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-忽略特殊文件"><a href="#6-忽略特殊文件" class="headerlink" title="6.忽略特殊文件"></a>6.忽略特殊文件</h4><p>在 Git 工作目录下，可以创建 .gitignore 文件，来配置不希望被提交的文件</p>
+<p>不需要从头写.gitignore文件，GitHub已经为我们准备了各种配置文件，只需要组合一下就可以使用了。所有配置文件可以直接在线浏览：<code>https://github.com/github/gitignore</code></p>
+<p>忽略文件的原则是：</p>
+<ul>
+<li>忽略操作系统自动生成的文件，比如缩略图等；</li>
+<li>忽略编译生成的中间文件、可执行文件等，也就是如果一个文件是通过另一个文件自动生成的，那自动生成的文件就没必要放进版本库，比如Java编译产生的.class文件；</li>
+<li>忽略你自己的带有敏感信息的配置文件，比如存放口令的配置文件。</li>
+</ul>
+<p>如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">.DS_Store</span><br><span class="line"></span><br><span class="line">session_data</span><br><span class="line"></span><br><span class="line">*.iml</span><br><span class="line">.idea</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># Package Files #</span><br><span class="line">*.jar</span><br><span class="line">*.war</span><br><span class="line">*.ear</span><br><span class="line">*.zip</span><br><span class="line">*.tar.gz</span><br><span class="line">*.rar</span><br><span class="line">target</span><br><span class="line"></span><br><span class="line"># Compiled class file</span><br><span class="line">*.class</span><br><span class="line"></span><br><span class="line">node_modules</span><br><span class="line">build</span><br><span class="line"></span><br><span class="line"># Log file</span><br><span class="line">*.log</span><br><span class="line"></span><br><span class="line"># BlueJ files</span><br><span class="line">*.ctxt</span><br><span class="line"></span><br><span class="line"># Mobile Tools for Java (J2ME)</span><br><span class="line">.mtj.tmp/</span><br><span class="line"></span><br><span class="line"># virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml</span><br><span class="line">hs_err_pid*</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-配置别名"><a href="#7-配置别名" class="headerlink" title="7.配置别名"></a>7.配置别名</h4><p>配置 git status 简写为 git st</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global alias.st status</span><br></pre></td></tr></table></figure>
+
+<p>–global是针对当前用户起作用的，如果不加，那只针对当前的仓库起作用。</p>
+<p>还可以通过在配置文件加入别名配置，在.git/config下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ cat .git/config </span><br><span class="line">[core]</span><br><span class="line">    repositoryformatversion = 0</span><br><span class="line">    filemode = true</span><br><span class="line">    bare = false</span><br><span class="line">    logallrefupdates = true</span><br><span class="line">    ignorecase = true</span><br><span class="line">    precomposeunicode = true</span><br><span class="line">[remote &quot;origin&quot;]</span><br><span class="line">    url = git@github.com:michaelliao/learngit.git</span><br><span class="line">    fetch = +refs/heads/*:refs/remotes/origin/*</span><br><span class="line">[branch &quot;master&quot;]</span><br><span class="line">    remote = origin</span><br><span class="line">    merge = refs/heads/master</span><br><span class="line">[alias]</span><br><span class="line">    last = log -1</span><br></pre></td></tr></table></figure>
+
+<p>推荐别名：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global alias.lg &quot;log --color --graph --pretty=format:&apos;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&apos; --abbrev-commit&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="搭建-Git-服务器"><a href="#搭建-Git-服务器" class="headerlink" title="搭建 Git 服务器"></a>搭建 Git 服务器</h3><h4 id="3-1-CentOS"><a href="#3-1-CentOS" class="headerlink" title="3.1 CentOS"></a>3.1 CentOS</h4><ol>
+<li><h5 id="创建一个-git-用户组和用户，用来运行-git服务："><a href="#创建一个-git-用户组和用户，用来运行-git服务：" class="headerlink" title="创建一个 git 用户组和用户，用来运行 git服务："></a>创建一个 git 用户组和用户，用来运行 git服务：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># groupadd git</span><br><span class="line"># useradd git -g git</span><br></pre></td></tr></table></figure>
+</li>
+<li><h5 id="创建证书登录"><a href="#创建证书登录" class="headerlink" title="创建证书登录"></a>创建证书登录</h5><p>收集所有需要登录的用户的公钥，个人公钥位于 ~/.ssh/id_rsa.pub 文件中。</p>
+<p>把这些公钥信息放到 /home/git/.ssh/authorized_keys 文件里，一行一个</p>
+<p>在本机可以用命直接导入：<code>cat id_rsa.pub &gt;&gt; ～/.ssh/authorized_keys</code></p>
+<p>如果没有该文件创建它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># cd /home/git/</span><br><span class="line"># mkdir .ssh</span><br><span class="line"># touch .ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<h5 id="Git服务器需要RSA认证，然后就可以-根据-authorized-keys-文件里的公钥来验证个人信息了。当然需要将-RSA-认证配置打开"><a href="#Git服务器需要RSA认证，然后就可以-根据-authorized-keys-文件里的公钥来验证个人信息了。当然需要将-RSA-认证配置打开" class="headerlink" title="Git服务器需要RSA认证，然后就可以 根据 authorized_keys 文件里的公钥来验证个人信息了。当然需要将 RSA 认证配置打开"></a>Git服务器需要RSA认证，然后就可以 根据 authorized_keys 文件里的公钥来验证个人信息了。当然需要将 RSA 认证配置打开</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+
+<h5 id="在文件中，找到-AuthorizedKeysFile-配置节点，将下面前2句配置进去-即可"><a href="#在文件中，找到-AuthorizedKeysFile-配置节点，将下面前2句配置进去-即可" class="headerlink" title="在文件中，找到 AuthorizedKeysFile 配置节点，将下面前2句配置进去 即可"></a>在文件中，找到 AuthorizedKeysFile 配置节点，将下面前2句配置进去 即可</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RSAAuthentication yes     </span><br><span class="line">PubkeyAuthentication yes     </span><br><span class="line">AuthorizedKeysFile  .ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<h5 id="设置-git目录下的-权限"><a href="#设置-git目录下的-权限" class="headerlink" title="设置 git目录下的 权限"></a>设置 git目录下的 权限</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># chmod 755 /home</span><br><span class="line"># chmod 700 /home/git</span><br><span class="line"># chmod 700 /home/git/.ssh</span><br><span class="line"># chmod 600 /home/git/.ssh/authorized_keys</span><br><span class="line"># chown git /home/git</span><br><span class="line"># chown git /home/git/.ssh</span><br><span class="line"># chown git /home/git/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+</li>
+<li><h5 id="初始化Git仓库"><a href="#初始化Git仓库" class="headerlink" title="初始化Git仓库"></a>初始化Git仓库</h5><p>我们 先选定一个目录作为 Git 仓库，并配置 权限。并创建一个 空仓库 project1.git，并且修改 project1.git 权限(注意 要用 -R)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># mkdir git_repository</span><br><span class="line"># chown git:git git_repository</span><br><span class="line"># cd git_repository</span><br><span class="line"># git init --bare project1.git</span><br><span class="line">Initialized empty Git repository in /home/git/git_repository/project1.git/</span><br><span class="line"># chown -R git:git project1.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><h5 id="克隆仓库"><a href="#克隆仓库" class="headerlink" title="克隆仓库"></a>克隆仓库</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># git clone git@120.77.47.95:/home/git/git_repository/project1.git</span><br><span class="line">Cloning into &apos;project1&apos;...</span><br><span class="line">The authenticity of host &apos;120.77.47.95 (120.77.47.95)&apos; can&apos;t be established.</span><br><span class="line">ECDSA key fingerprint is SHA256:V/9QGB5qBjUxa2SP5Kzl7LFXbj3+m+wTmBo1IIPYQaE.</span><br><span class="line">ECDSA key fingerprint is MD5:a2:c3:ba:fb:d1:ea:60:03:5f:71:50:14:0b:26:97:d7.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br><span class="line">Warning: Permanently added &apos;120.77.47.95&apos; (ECDSA) to the list of known hosts.</span><br><span class="line">Enter passphrase for key &apos;/root/.ssh/id_rsa&apos;:   # 输入配置的密码(如果没有密码，则没有该选项)</span><br></pre></td></tr></table></figure>
+</li>
+<li><h5 id="可能出现的问题"><a href="#可能出现的问题" class="headerlink" title="可能出现的问题"></a>可能出现的问题</h5></li>
+</ol>
+<h5 id="一、在-git-clone-时，可能出现问题："><a href="#一、在-git-clone-时，可能出现问题：" class="headerlink" title="一、在 git clone 时，可能出现问题："></a>一、在 git clone 时，可能出现问题：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fatal: protocol error: bad line length character: This</span><br></pre></td></tr></table></figure>
+
+<p>/etc/passwd 下有个关于 git 的信息配置，注意需要配置为 <code>[保持不变]::/home/git:/bin/bash</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git:x:1000:1000::/home/git:/sbin/nologin</span><br><span class="line"></span><br><span class="line">修改为</span><br><span class="line"></span><br><span class="line">git:x:1000:1000::/home/git:/bin/bash</span><br></pre></td></tr></table></figure>
+
+<h5 id="二、在-push-origin-master-代码时，出现如下问题："><a href="#二、在-push-origin-master-代码时，出现如下问题：" class="headerlink" title="二、在 push origin master 代码时，出现如下问题："></a>二、在 push origin master 代码时，出现如下问题：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># git push origin master</span><br><span class="line">Enter passphrase for key &apos;/root/.ssh/id_rsa&apos;:</span><br><span class="line">Counting objects: 3, done.</span><br><span class="line">Writing objects: 100% (3/3), 203 bytes | 0 bytes/s, done.</span><br><span class="line">Total 3 (delta 0), reused 0 (delta 0)</span><br><span class="line">remote: error: insufficient permission for adding an object to repository database ./objects</span><br><span class="line">remote: fatal: failed to write object</span><br><span class="line">error: unpack failed: unpack-objects abnormal exit</span><br><span class="line">To git@120.77.47.95:/home/git/git_repository/project1.git</span><br><span class="line"> ! [remote rejected] master -&gt; master (unpacker error)</span><br><span class="line">error: failed to push some refs to &apos;git@120.77.47.95:/home/git/git_repository/project1.git&apos;</span><br></pre></td></tr></table></figure>
+
+<p>这个是因为权限问题：注意，需要使用如下命令授予权限：<code>chown -R git:git /home/git/git_repository/project1.git</code></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>ww</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://yoursite.com/2017/05/07/linxu安装/">http://yoursite.com/2017/05/07/linxu安装/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>good good stady</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/05/07/MySQL用户管理/">mysql用户管理</a>
+            
+            
+            <a class="next" rel="next" href="/2017/03/09/mysql安装/">mysql安装</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© ww | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

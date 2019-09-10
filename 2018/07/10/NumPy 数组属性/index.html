@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+<title>numpy数组属性 | </title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">ww</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">ww</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">numpy数组属性</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">ww</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">七月 10, 2018&nbsp;&nbsp;11:08:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>Title: guowei的技术博客<br>Date: 2019-08-13 10:20<br>Modified: 2019-08-08 19:30<br>Category: 技术<br>Tags: 机器学习<br>Slug: 机器学习<br>Authors: guowei</p>
+<h1 id="NumPy-数组属性"><a href="#NumPy-数组属性" class="headerlink" title="NumPy 数组属性"></a>NumPy 数组属性</h1><h4 id="Numpy是高性能科学计算和数据分析的基础包，它的部分功能如下："><a href="#Numpy是高性能科学计算和数据分析的基础包，它的部分功能如下：" class="headerlink" title="Numpy是高性能科学计算和数据分析的基础包，它的部分功能如下："></a>Numpy是高性能科学计算和数据分析的基础包，它的部分功能如下：</h4><h4 id="1）ndarray-一个具有矢量算术运算和复杂广播能力的快速且节省空间的多维数组。"><a href="#1）ndarray-一个具有矢量算术运算和复杂广播能力的快速且节省空间的多维数组。" class="headerlink" title="1）ndarray,一个具有矢量算术运算和复杂广播能力的快速且节省空间的多维数组。"></a>1）ndarray,一个具有矢量算术运算和复杂广播能力的快速且节省空间的多维数组。</h4><h4 id="2）对整组数据进行快速运算的标准数学函数"><a href="#2）对整组数据进行快速运算的标准数学函数" class="headerlink" title="2）对整组数据进行快速运算的标准数学函数"></a>2）对整组数据进行快速运算的标准数学函数</h4><h4 id="3）用于读写磁盘数据的工具以及用于操作内存映射文件的工具。"><a href="#3）用于读写磁盘数据的工具以及用于操作内存映射文件的工具。" class="headerlink" title="3）用于读写磁盘数据的工具以及用于操作内存映射文件的工具。"></a>3）用于读写磁盘数据的工具以及用于操作内存映射文件的工具。</h4><p>numpy数组的维数成为    秩（rank） 一维成为  秩1，二维 秩2 以此类推</p>
+<p>array 转换 为list  用 tolist()</p>
+<p>list = np.score.tolist()</p>
+<p>将列表转为 array 用np.array强转</p>
+<p>np.array(list)</p>
+<p>ndarray.ndim  秩，即轴的数量或维度的数量    查看维度</p>
+<p>ndarray.shape 数组的维度 对于矩阵 n行 n列    查看数据维度大小</p>
+<p>ndarray.size 数组元素的总个数 相当于 .shape 中 n*m 的值     查看数据的个数</p>
+<p>ndarray.dtype  ndarray 对象的元素类型    </p>
+<p>ndarray.itemsize   ndarray 对象中每个元素的大小，以字节为单位   </p>
+<ul>
+<li><h4 id="ndarray-flags-ndarray-对象的内存信息"><a href="#ndarray-flags-ndarray-对象的内存信息" class="headerlink" title="ndarray.flags  ndarray 对象的内存信息"></a>ndarray.flags  ndarray 对象的内存信息</h4></li>
+<li></li>
+<li><table>
+<thead>
+<tr>
+<th>C_CONTIGUOUS (C)</th>
+<th>数据是在一个单一的C风格的连续段中</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F_CONTIGUOUS (F)</td>
+<td>数据是在一个单一的Fortran风格的连续段中</td>
+</tr>
+<tr>
+<td>OWNDATA (O)</td>
+<td>数组拥有它所使用的内存或从另一个对象中借用它</td>
+</tr>
+<tr>
+<td>WRITEABLE (W)</td>
+<td>数据区域可以被写入，将该值设置为 False，则数据为只读</td>
+</tr>
+<tr>
+<td>ALIGNED (A)</td>
+<td>数据和所有元素都适当地对齐到硬件上</td>
+</tr>
+<tr>
+<td>UPDATEIFCOPY (U)</td>
+<td>这个数组是其它数组的一个副本，当这个数组被释放时，原数组的内容将被更新</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<p>reshape 改变数组维度</p>
+<p>ndarray.real     ndarray元素的实部</p>
+<p>ndarray.imag   ndarray 元素的虚部</p>
+<p>ndarray.data     包含实际数组元素的缓冲区，由于一般通过数组的索引获取元素，所以通常不需要使用这个属性。</p>
+<h1 id="NumPy-创建数组"><a href="#NumPy-创建数组" class="headerlink" title="NumPy 创建数组"></a>NumPy 创建数组</h1><p>ndarray 数组除了可以使用底层 ndarray 构造器来创建外，也可以通过以下几种方式来创建。</p>
+<h5 id="1-numpy-empty-方法用来创建一个指定形状（shape）、数据类型（dtype）且未初始化的数组："><a href="#1-numpy-empty-方法用来创建一个指定形状（shape）、数据类型（dtype）且未初始化的数组：" class="headerlink" title="1.numpy.empty 方法用来创建一个指定形状（shape）、数据类型（dtype）且未初始化的数组："></a>1.numpy.empty 方法用来创建一个指定形状（shape）、数据类型（dtype）且未初始化的数组：</h5><table>
+<thead>
+<tr>
+<th>shape</th>
+<th>数组形状</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dtype</td>
+<td>数据类型，可选</td>
+</tr>
+<tr>
+<td>order</td>
+<td>有”C”和”F”两个选项,分别代表，行优先和列优先，在计算机内存中的存储元素的顺序。</td>
+</tr>
+</tbody></table>
+<h5 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">numpy.empty(shape, dtype = float, order = &apos;C&apos;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>import numpy as np  x = np.empty([3,2], dtype = int)  print (x)</p>
+<h4 id="2-numpy-zeros创建指定大小的数组，数组元素以-0-来填充"><a href="#2-numpy-zeros创建指定大小的数组，数组元素以-0-来填充" class="headerlink" title="2.numpy.zeros创建指定大小的数组，数组元素以 0 来填充"></a>2.numpy.zeros创建指定大小的数组，数组元素以 0 来填充</h4><table>
+<thead>
+<tr>
+<th>shape</th>
+<th>数组形状</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dtype</td>
+<td>数据类型，可选</td>
+</tr>
+<tr>
+<td>order</td>
+<td>‘C’ 用于 C 的行数组，或者 ‘F’ 用于 FORTRAN 的列数组</td>
+</tr>
+</tbody></table>
+<h5 id="使用方法-1"><a href="#使用方法-1" class="headerlink" title="使用方法"></a>使用方法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">numpy.zeros(shape, dtype = float, order = &apos;C&apos;)</span><br></pre></td></tr></table></figure>
+
+<p>import numpy as np</p>
+<p>默认为浮点数</p>
+<p>x = np.zeros(5)<br>print(x)</p>
+<p>设置类型为整数</p>
+<p>y = np.zeros((5,), dtype = np.int)<br>print(y)</p>
+<p>自定义类型</p>
+<p>z = np.zeros((2,2), dtype = [(‘x’, ‘i4’), (‘y’, ‘i4’)])<br>print(z)</p>
+<h1 id="3-numpy-ones创建指定形状的数组，数组元素以-1-来填充"><a href="#3-numpy-ones创建指定形状的数组，数组元素以-1-来填充" class="headerlink" title="3.numpy.ones创建指定形状的数组，数组元素以 1 来填充"></a>3.numpy.ones创建指定形状的数组，数组元素以 1 来填充</h1><table>
+<thead>
+<tr>
+<th>shape</th>
+<th>数组形状</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dtype</td>
+<td>数据类型，可选</td>
+</tr>
+<tr>
+<td>order</td>
+<td>‘C’ 用于 C 的行数组，或者 ‘F’ 用于 FORTRAN 的列数组</td>
+</tr>
+</tbody></table>
+<h5 id="使用方法-2"><a href="#使用方法-2" class="headerlink" title="使用方法"></a>使用方法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">numpy.ones(shape, dtype = None, order = &apos;C&apos;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="实例-1"><a href="#实例-1" class="headerlink" title="实例"></a>实例</h2><p>import numpy as np  </p>
+<p>默认为浮点数 x = np.ones(5)  </p>
+<p>print(x)   # 自定义类型 </p>
+<p>x = np.ones([2,2], dtype = int)</p>
+<p> print(x)</p>
+<h1 id="NumPy-从数值范围创建数组"><a href="#NumPy-从数值范围创建数组" class="headerlink" title="NumPy 从数值范围创建数组"></a>NumPy 从数值范围创建数组</h1><h3 id="1-numpy-arange-numpy-包中的使用-arange-函数创建数值范围并返回-ndarray-对象"><a href="#1-numpy-arange-numpy-包中的使用-arange-函数创建数值范围并返回-ndarray-对象" class="headerlink" title="1.numpy.arange  numpy 包中的使用 arange 函数创建数值范围并返回 ndarray 对象"></a>1.numpy.arange  numpy 包中的使用 arange 函数创建数值范围并返回 ndarray 对象</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">numpy.arange(start, stop, step, dtype)</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th><code>start</code></th>
+<th>起始值，默认为<code>0</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>stop</code></td>
+<td>终止值（不包含）</td>
+</tr>
+<tr>
+<td><code>step</code></td>
+<td>步长，默认为<code>1</code></td>
+</tr>
+<tr>
+<td><code>dtype</code></td>
+<td>返回<code>ndarray</code>的数据类型，如果没有提供，则会使用输入数据的类型。</td>
+</tr>
+</tbody></table>
+<h3 id="2-numpy-linspace-函数用于创建一个一维数组，数组是一个等差数列构成的"><a href="#2-numpy-linspace-函数用于创建一个一维数组，数组是一个等差数列构成的" class="headerlink" title="2.numpy.linspace 函数用于创建一个一维数组，数组是一个等差数列构成的"></a>2.numpy.linspace 函数用于创建一个一维数组，数组是一个等差数列构成的</h3><h5 id="使用方法-3"><a href="#使用方法-3" class="headerlink" title="使用方法"></a>使用方法</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">p.linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None)</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th><code>start</code></th>
+<th>序列的起始值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>stop</code></td>
+<td>序列的终止值，如果<code>endpoint</code>为<code>true</code>，该值包含于数列中</td>
+</tr>
+<tr>
+<td><code>num</code></td>
+<td>要生成的等步长的样本数量，默认为<code>50</code></td>
+</tr>
+<tr>
+<td><code>endpoint</code></td>
+<td>该值为 <code>ture</code> 时，数列中中包含<code>stop</code>值，反之不包含，默认是True。</td>
+</tr>
+<tr>
+<td><code>retstep</code></td>
+<td>如果为 True 时，生成的数组中会显示间距，反之不显示。</td>
+</tr>
+<tr>
+<td><code>dtype</code></td>
+<td><code>ndarray</code> 的数据类型</td>
+</tr>
+</tbody></table>
+<h1 id="拓展例子"><a href="#拓展例子" class="headerlink" title="拓展例子"></a>拓展例子</h1><p>b =np.linspace(1,10,10).reshape([10,1])<br>print(b)</p>
+<h1 id="3-numpy-logspace-函数用于创建一个于等比数列"><a href="#3-numpy-logspace-函数用于创建一个于等比数列" class="headerlink" title="3.numpy.logspace  函数用于创建一个于等比数列"></a>3.numpy.logspace  函数用于创建一个于等比数列</h1><p>使用方法 </p>
+<p>np.logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None)</p>
+<table>
+<thead>
+<tr>
+<th><code>start</code></th>
+<th>序列的起始值为：base ** start</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>stop</code></td>
+<td>序列的终止值为：base ** stop。如果<code>endpoint</code>为<code>true</code>，该值包含于数列中</td>
+</tr>
+<tr>
+<td><code>num</code></td>
+<td>要生成的等步长的样本数量，默认为<code>50</code></td>
+</tr>
+<tr>
+<td><code>endpoint</code></td>
+<td>该值为 <code>ture</code> 时，数列中中包含<code>stop</code>值，反之不包含，默认是True。</td>
+</tr>
+<tr>
+<td><code>base</code></td>
+<td>对数 log 的底数。</td>
+</tr>
+<tr>
+<td><code>dtype</code></td>
+<td><code>ndarray</code> 的数据类型</td>
+</tr>
+</tbody></table>
+<p>base 参数意思是取对数的时候 log 的下标</p>
+<p>import numpy as np</p>
+<h2 id="实例-2"><a href="#实例-2" class="headerlink" title="实例"></a>实例</h2><p>默认底数是 10</p>
+<p>a = np.logspace(1.0,  2.0, num =  10)<br>print (a)</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>ww</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://yoursite.com/2018/07/10/NumPy 数组属性/">http://yoursite.com/2018/07/10/NumPy 数组属性/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>good good stady</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/09/09/1基础命令详解/">docker基础命令</a>
+            
+            
+            <a class="next" rel="next" href="/2018/07/09/NumPy 切片和索引/">numpy切片和index</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© ww | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

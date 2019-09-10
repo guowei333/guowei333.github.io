@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+<title>numpy切片和index | </title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">ww</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">ww</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">numpy切片和index</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">ww</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">七月 9, 2018&nbsp;&nbsp;7:08:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="pandas-介绍"><a href="#pandas-介绍" class="headerlink" title="pandas 介绍"></a>pandas 介绍</h1><h2 id="Pandas-是Python的数据处理包，全名：Python-Data-Analysis-Library，Pandas-是非常著名的开源数据处理库，我们可以通过它完成对数据集进行快速读取、转换、过滤、分析等一系列操作。Pandas库是基于Numpy库来创建的，Numpy主要用于矩阵操作，而Pandas主要用于数据处理。特色是："><a href="#Pandas-是Python的数据处理包，全名：Python-Data-Analysis-Library，Pandas-是非常著名的开源数据处理库，我们可以通过它完成对数据集进行快速读取、转换、过滤、分析等一系列操作。Pandas库是基于Numpy库来创建的，Numpy主要用于矩阵操作，而Pandas主要用于数据处理。特色是：" class="headerlink" title="Pandas 是Python的数据处理包，全名：Python Data Analysis Library，Pandas 是非常著名的开源数据处理库，我们可以通过它完成对数据集进行快速读取、转换、过滤、分析等一系列操作。Pandas库是基于Numpy库来创建的，Numpy主要用于矩阵操作，而Pandas主要用于数据处理。特色是："></a>Pandas 是Python的数据处理包，全名：Python Data Analysis Library，Pandas 是非常著名的开源数据处理库，我们可以通过它完成对数据集进行快速读取、转换、过滤、分析等一系列操作。Pandas库是基于Numpy库来创建的，Numpy主要用于矩阵操作，而Pandas主要用于数据处理。特色是：</h2><p> 1）支持多种数据格式，甚至包括excel和SQL数据库；</p>
+<p>  2）数据对齐，缺失数据处理，数据排序等常规数据整理操作；</p>
+<p>  3）基于标签的数据集操作，包括切片和采样等；</p>
+<p>  4）高性能的merge和join操作；</p>
+<p>  5）支持时序数据操作；</p>
+<p>  6）超高性能，核心代码基于C，实测性能远远超过等价的Java实现；</p>
+<hr>
+<h1 id="Pandas的数据结构"><a href="#Pandas的数据结构" class="headerlink" title="Pandas的数据结构"></a>Pandas的数据结构</h1><h2 id="（1）Series"><a href="#（1）Series" class="headerlink" title="（1）Series"></a>（1）Series</h2><p>  一维数据Series 是 Pandas 中最基本的 1 维数据形式。其可以储存整数、浮点数、字符串等形式的数据。Series 的新建方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">s = pandas.Series(data, index=index)</span><br><span class="line">其中，data 可以是字典、numpy 里的 ndarray 对象等。index 是数据索引，索引是 pandas 数据结构中的一大特性，它主要的功能是帮助我们更快速地定位数据。</span><br><span class="line"></span><br><span class="line">1）字典 -&gt; Series</span><br><span class="line">import pandas as pd</span><br><span class="line"></span><br><span class="line">d = &#123;&apos;a&apos; : 10, &apos;b&apos; : 20, &apos;c&apos; : 30&#125;</span><br><span class="line">print pd.Series(d)</span><br><span class="line">a    10</span><br><span class="line">b    20</span><br><span class="line">c    30</span><br><span class="line">dtype: int64</span><br><span class="line"></span><br><span class="line">我们可以直接通过index=[]来设置新的索引。</span><br><span class="line">d = &#123;&apos;a&apos; : 10, &apos;b&apos; : 20, &apos;c&apos; : 30&#125;</span><br><span class="line">s = pd.Series(d, index=[&apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;a&apos;])</span><br><span class="line">print s</span><br><span class="line">b    20.0</span><br><span class="line">c    30.0</span><br><span class="line">d     NaN</span><br><span class="line">a    10.0</span><br><span class="line">dtype: float64</span><br><span class="line"></span><br><span class="line">你会发现，pandas 会自动匹配人为设定的索引值和字典转换过来的索引值。而当索引无对应值时，会显示为 NaN 缺失值。</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-ndarray-gt-Series"><a href="#2-ndarray-gt-Series" class="headerlink" title="(2)ndarray -&gt; Series"></a>(2)ndarray -&gt; Series</h2><p> (1)ndarray 是著名数值计算包 numpy 中的多维数组。我们也可以将 ndarray 直接转换为 Series。</p>
+<p>import pandas as pd<br>import numpy as np</p>
+<p>data = np.random.randn(5)         # 一维随机数<br>index = [‘a’, ‘b’, ‘c’, ‘d’, ‘e’] # 指定索引<br>s = pd.Series(data, index)<br>print s<br>a    0.583529<br>b    1.339164<br>c   -0.029611<br>d   -1.331405<br>e    0.067889</p>
+<p>dtype: float64</p>
+<p>当我们需要从一维数据 Series 中返回某一个值时，可以直接通过索引完成。如print s[‘a’]。而当我们非人为指定索引值时，Pandas 会默认从 0 开始设置索引值。</p>
+<p>s = pd.Series<br>print s<br>0    0.583529<br>1    1.339164<br>2   -0.029611<br>3   -1.331405<br>4    0.067889<br>dtype: float64 </p>
+<h2 id="（2）DataFrame"><a href="#（2）DataFrame" class="headerlink" title="（2）DataFrame"></a>（2）DataFrame</h2><p>  DataFrame 是 Pandas 中最为常见、最重要且使用频率最高的数据结构。你可以想到它箱型为电子表格或 SQL 表具有的结构。DataFrame包括三部分信息，表头（列的名称），表的内容（二维矩阵），索引（每行一个唯一的标记）。DataFrame 可以被看成是以 Series 组成的字典。它和 Series 的区别在于，不但具有行索引，且具有列索引。DataFrame 可以用于储存多种类型的输入：<br>    &gt;&gt; 一维数组、列表、字典或者 Series 字典。<br>    &gt;&gt; 二维 numpy.ndarray。<br>    &gt;&gt; 结构化的 ndarray。</p>
+<blockquote>
+<blockquote>
+<p>一个 Series。  &gt;&gt; 另一个 DataFrame。</p>
+</blockquote>
+</blockquote>
+<p>​    <strong>通过list创建</strong></p>
+<p>import pandas as pd<br>df = pd.DataFrame([[1,2,3],[4,5,6]])<br>df<br>   0  1  2<br>0  1  2  3<br>1  4  5  6</p>
+<p>指定列名  columns=[‘c1’,’c2’,’c3’])   和索引用 index=[‘row1’,’row2’]</p>
+<p>df = pd.DataFrame([[1,2,3],[4,5,6]],index=[‘row1’,’row2’],columns=[‘c1’,’c2’,’c3’])<br>df<br>       c1  c2  c3<br>row1   1   2   3<br>row2   4   5   6</p>
+<p>2）通过numpy生成的数组创建<br>df3 = pd.DataFrame(np.array([[1,2],[3,4]]), columns=[‘col1’,’col2’], index=[‘a’,’b’])<br>print (df3)<br>   col1  col2<br>a     1     2<br>b     3     4</p>
+<p>3）通过字典创建<br>df4 = pd.DataFrame({‘col1’:[1,3],’col2’:[2,4]},index=[‘a’,’b’])<br>print (df4)<br>    col1  col2<br>a     1     2<br>b     3     4<br>注意：创建DataFrame对象的数据可以为列表，数组和字典，列名和索引为列表对象。</p>
+<p>4）DataFrame的状态信息<br>  获取数据的行数、获取形状</p>
+<p>len(df)    # 返回DataFrame的行数<br>df.shape   # 返回DataFrame的形状，一个二元组(a,b)，a为行数，b为列数<br>  显示索引、列、矩阵数据</p>
+<p>df.index    # 获取行索引<br>df.columns  # 获取列索引<br>df.values   # 获取表中的值<br>  修改列名:</p>
+<p>a = pd.DataFrame({‘A’:[1,2,3], ‘B’:[4,5,6], ‘C’:[7,8,9]})<br>print a<br>   A  B  C<br>0  1  4  7<br>1  2  5  8<br>2  3  6  9</p>
+<p>a.rename(columns={‘A’:’a’, ‘B’:’b’, ‘C’:’c’}, inplace = True)<br>print a<br>   a  b  c<br>0  1  4  7<br>1  2  5  8<br>2  3  6  9<br>  查看DataFrame的描述信息：</p>
+<p>DataFrame.info()<br>DataFrame.dtype</p>
+<p>DataFrame.describe()</p>
+<h1 id="NumPy-切片和索引"><a href="#NumPy-切片和索引" class="headerlink" title="NumPy 切片和索引"></a>NumPy 切片和索引</h1><p>var,标准差反应一组数据的波动</p>
+<h5 id="ndarray对象的内容可以通过索引或切片来访问和修改，与-Python-中-list-的切片操作一样。"><a href="#ndarray对象的内容可以通过索引或切片来访问和修改，与-Python-中-list-的切片操作一样。" class="headerlink" title="ndarray对象的内容可以通过索引或切片来访问和修改，与 Python 中 list 的切片操作一样。"></a>ndarray对象的内容可以通过索引或切片来访问和修改，与 Python 中 list 的切片操作一样。</h5><h5 id="ndarray-数组可以基于-0-n-的下标进行索引，切片对象可以通过内置的-slice-函数，并设置-start-stop-及-step-参数进行，从原数组中切割出一个新数组。"><a href="#ndarray-数组可以基于-0-n-的下标进行索引，切片对象可以通过内置的-slice-函数，并设置-start-stop-及-step-参数进行，从原数组中切割出一个新数组。" class="headerlink" title="ndarray 数组可以基于 0 - n 的下标进行索引，切片对象可以通过内置的 slice 函数，并设置 start, stop 及 step 参数进行，从原数组中切割出一个新数组。"></a>ndarray 数组可以基于 0 - n 的下标进行索引，切片对象可以通过内置的 slice 函数，并设置 start, stop 及 step 参数进行，从原数组中切割出一个新数组。</h5><h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>import numpy as np   </p>
+<p>a = np.arange(10) </p>
+<p>s = slice(2,7,2)   # 从索引 2 开始到索引 7 停止，间隔为2</p>
+<p>print (a[s])</p>
+<h5 id="冒号-的解释：如果只放置一个参数，如-2-，将返回与该索引相对应的单个元素。如果为-2-，表示从该索引开始以后的所有项都将被提取。如果使用了两个参数，如-2-7-，那么则提取两个索引-不包括停止索引-之间的项。"><a href="#冒号-的解释：如果只放置一个参数，如-2-，将返回与该索引相对应的单个元素。如果为-2-，表示从该索引开始以后的所有项都将被提取。如果使用了两个参数，如-2-7-，那么则提取两个索引-不包括停止索引-之间的项。" class="headerlink" title="冒号 : 的解释：如果只放置一个参数，如 [2]，将返回与该索引相对应的单个元素。如果为 [2:]，表示从该索引开始以后的所有项都将被提取。如果使用了两个参数，如 [2:7]，那么则提取两个索引(不包括停止索引)之间的项。"></a>冒号 <strong>:</strong> 的解释：如果只放置一个参数，如 <strong>[2]</strong>，将返回与该索引相对应的单个元素。如果为 <strong>[2:]</strong>，表示从该索引开始以后的所有项都将被提取。如果使用了两个参数，如 <strong>[2:7]</strong>，那么则提取两个索引(不包括停止索引)之间的项。</h5><h5 id="切片还可以包括省略号-…，来使选择元组的长度与数组的维度相同。-如果在行位置使用省略号，它将返回包含行中元素的-ndarray"><a href="#切片还可以包括省略号-…，来使选择元组的长度与数组的维度相同。-如果在行位置使用省略号，它将返回包含行中元素的-ndarray" class="headerlink" title="切片还可以包括省略号 …，来使选择元组的长度与数组的维度相同。 如果在行位置使用省略号，它将返回包含行中元素的 ndarray"></a>切片还可以包括省略号 <strong>…</strong>，来使选择元组的长度与数组的维度相同。 如果在行位置使用省略号，它将返回包含行中元素的 ndarray</h5><h2 id="实例-1"><a href="#实例-1" class="headerlink" title="实例"></a>实例</h2><p>import numpy as np   </p>
+<p>a = np.array([[1,2,3],[3,4,5],[4,5,6]])   </p>
+<p>print (a[…,1])   # 第2列元素 </p>
+<p>print (a[1,…])   第2行元素 </p>
+<p>print (a[…,1:])  # 第2列及剩下的所有元素</p>
+<h1 id="NumPy-高级索引"><a href="#NumPy-高级索引" class="headerlink" title="NumPy 高级索引"></a>NumPy 高级索引</h1><h6 id="NumPy-比一般的-Python-序列提供更多的索引方式。除了之前看到的用整数和切片的索引外，数组可以由整数数组索引、布尔索引及花式索引。"><a href="#NumPy-比一般的-Python-序列提供更多的索引方式。除了之前看到的用整数和切片的索引外，数组可以由整数数组索引、布尔索引及花式索引。" class="headerlink" title="NumPy 比一般的 Python 序列提供更多的索引方式。除了之前看到的用整数和切片的索引外，数组可以由整数数组索引、布尔索引及花式索引。"></a>NumPy 比一般的 Python 序列提供更多的索引方式。除了之前看到的用整数和切片的索引外，数组可以由整数数组索引、布尔索引及花式索引。</h6><h2 id="实例-2"><a href="#实例-2" class="headerlink" title="实例"></a>实例</h2><p>import numpy as np<br>x = np.array([[1,  2],  [3,  4],  [5,  6]])<br>y = x[[0,1,2],  [0,1,0]]<br>print (y)</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>ww</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://yoursite.com/2018/07/09/NumPy 切片和索引/">http://yoursite.com/2018/07/09/NumPy 切片和索引/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>good good stady</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/07/10/NumPy 数组属性/">numpy数组属性</a>
+            
+            
+            <a class="next" rel="next" href="/2018/07/02/node、koa安装、卸载/">Node安装最佳方案(源码安装8.0.0)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© ww | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

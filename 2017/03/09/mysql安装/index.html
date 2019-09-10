@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+<title>mysql安装 | </title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">ww</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">ww</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">mysql安装</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">ww</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">三月 9, 2017&nbsp;&nbsp;2:08:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h3 id="windows下安装mysql-8-0"><a href="#windows下安装mysql-8-0" class="headerlink" title="windows下安装mysql-8.0"></a>windows下安装mysql-8.0</h3><p>直接下载：<a href="https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-8.0.11-winx64.zip" target="_blank" rel="noopener">https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-8.0.11-winx64.zip</a> </p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="1-1，解压zip包到安装目录"><a href="#1-1，解压zip包到安装目录" class="headerlink" title="　　1.1，解压zip包到安装目录"></a>　　1.1，解压zip包到安装目录</h5><p>　　比如我的安装目录是：D:\mysql-8.0.11-winx64</p>
+<h5 id="1-2，配置文件"><a href="#1-2，配置文件" class="headerlink" title="　　1.2，配置文件"></a>　　1.2，配置文件</h5><p>　　在Windows系统中，配置文件默认是安装目录下的 my.ini 文件（或my-default.ini），部分配置需要在初始安装时配置，大部分也可以在安装完成后进行更改。当然，极端情况下，所有的都是可以更改的。</p>
+<p>　　我们发现解压后的目录并没有my.ini文件，没关系可以自行创建。在安装根目录下添加 my.ini，比如我这里是：D:\mysql-8.0.11-winx64\my.ini，写入基本配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line"></span><br><span class="line">#设置3306端口</span><br><span class="line"></span><br><span class="line">port=3306</span><br><span class="line"></span><br><span class="line">#设置mysql的安装目录</span><br><span class="line"></span><br><span class="line">basedir=D:\\ROUTE\\mysql8   # 此处可以用单斜杠也可以用双斜杠，有的人用单斜杠会错，自己试试就知道了</span><br><span class="line"></span><br><span class="line">#设置mysql数据库的数据的存放目录</span><br><span class="line"></span><br><span class="line">datadir=D:\mysql-8.0.11-winx64\Data   # 此处同上</span><br><span class="line"></span><br><span class="line">#允许最大连接数</span><br><span class="line"></span><br><span class="line">max_connections=200</span><br><span class="line"></span><br><span class="line">#允许连接失败的次数。这是为了防止有人从该主机试图攻击数据库系统</span><br><span class="line"></span><br><span class="line">max_connect_errors=10</span><br><span class="line"></span><br><span class="line">#服务端使用的字符集默认为UTF8</span><br><span class="line"></span><br><span class="line">character-set-server=utf8</span><br><span class="line"></span><br><span class="line">#创建新表时将使用的默认存储引擎</span><br><span class="line"></span><br><span class="line">default-storage-engine=INNODB</span><br><span class="line"></span><br><span class="line">#默认使用“mysql_native_password”插件认证</span><br><span class="line"></span><br><span class="line">default_authentication_plugin=mysql_native_password</span><br><span class="line"></span><br><span class="line">[mysql]</span><br><span class="line"></span><br><span class="line">#设置mysql客户端默认字符集</span><br><span class="line"></span><br><span class="line">default-character-set=utf8</span><br><span class="line"></span><br><span class="line">[client]</span><br><span class="line"></span><br><span class="line">#设置mysql客户端连接服务端时默认使用的端口，可能和VMware的端口冲突，可自行修改</span><br><span class="line"></span><br><span class="line">port=3306</span><br><span class="line"></span><br><span class="line">default-character-set=utf8</span><br><span class="line"></span><br><span class="line">[WinMySQLAdmin]</span><br><span class="line">Server=D:\mysql-8.0.11-winx64\bin\mysqld.exe</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置环境变量</strong></p>
+<p>D:\mysql-8.0.11-winx64\bin</p>
+<p><strong>以管理员身份进入cmd</strong></p>
+<p>进入D:\mysql-8.0.11-winx64\bin该目录下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqld --initialize --console</span><br></pre></td></tr></table></figure>
+
+<p>执行完成后，会打印 root 用户的初始默认密码</p>
+<p>其中root@localhost:后面的“rI5rvf5x5G,E”就是初始密码 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysqld --install</span><br><span class="line">net start mysql</span><br></pre></td></tr></table></figure>
+
+<h3 id="linux下安装mysql-5-7"><a href="#linux下安装mysql-5-7" class="headerlink" title="linux下安装mysql-5.7"></a>linux下安装mysql-5.7</h3><h4 id="1-下载并安装MySQL官方的-Yum-Repository"><a href="#1-下载并安装MySQL官方的-Yum-Repository" class="headerlink" title="1 下载并安装MySQL官方的 Yum Repository"></a>1 下载并安装MySQL官方的 Yum Repository</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# wget -i -c http://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<p>  使用上面的命令就直接下载了安装用的Yum Repository，大概25KB的样子，然后就可以直接yum安装了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# yum -y install mysql57-community-release-el7-10.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<p>  之后就开始安装MySQL服务器。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# yum -y install mysql-community-server</span><br></pre></td></tr></table></figure>
+
+<p>  这步可能会花些时间，安装完成后就会覆盖掉之前的mariadb。</p>
+<p><img src="https://images2017.cnblogs.com/blog/1079354/201707/1079354-20170726201927328-459165254.png" alt="img"></p>
+<p>至此MySQL就安装完成了，然后是对MySQL的一些设置。</p>
+<h4 id="2-MySQL数据库设置"><a href="#2-MySQL数据库设置" class="headerlink" title="2 MySQL数据库设置"></a>2 MySQL数据库设置</h4><p>  首先启动MySQL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# systemctl start  mysqld.service</span><br></pre></td></tr></table></figure>
+
+<p>  查看MySQL运行状态，运行状态如图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# systemctl status mysqld.service</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://images2017.cnblogs.com/blog/1079354/201707/1079354-20170726202441687-1168874203.png" alt="img"></p>
+<p>  此时MySQL已经开始正常运行，不过要想进入MySQL还得先找出此时root用户的密码，通过如下命令可以在日志文件中找出密码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# grep &quot;password&quot; /var/log/mysqld.log</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://images2017.cnblogs.com/blog/1079354/201707/1079354-20170726202722796-1932560887.png" alt="img"></p>
+<p>  如下命令进入数据库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# mysql -uroot -p</span><br></pre></td></tr></table></figure>
+
+<p>密码有安全限制。可以通过如下命令修改：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; set global validate_password_policy=0;</span><br><span class="line">mysql&gt; set global validate_password_length=1;</span><br></pre></td></tr></table></figure>
+
+<p>然后可以改密码了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set password=&apos;new password&apos;</span><br></pre></td></tr></table></figure>
+
+<p>设置之后就是我上面查出来的那几个值了，此时密码就可以设置的很简单，例如1234之类的。到此数据库的密码设置就完成了。</p>
+<p>  但此时还有一个问题，就是因为安装了Yum Repository，以后每次yum操作都会自动更新，需要把这个卸载掉：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# yum -y remove mysql57-community-release-el7-10.noarch</span><br></pre></td></tr></table></figure>
+
+<p> 此时才算真的完成了。 </p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>ww</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://yoursite.com/2017/03/09/mysql安装/">http://yoursite.com/2017/03/09/mysql安装/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>good good stady</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/05/07/linxu安装/">linux安装git</a>
+            
+            
+            <a class="next" rel="next" href="/2016/05/10/git上传项目/">git上传项目</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© ww | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

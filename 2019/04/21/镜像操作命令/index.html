@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+<title>docker镜像操作命令 | </title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">ww</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">ww</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">docker镜像操作命令</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">ww</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">四月 21, 2019&nbsp;&nbsp;17:08:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#查看docker版本</span></span><br><span class="line">docker version</span><br><span class="line"></span><br><span class="line"><span class="comment">#查看docker信息</span></span><br><span class="line">docker info</span><br><span class="line"></span><br><span class="line"><span class="comment">#启动docker服务</span></span><br><span class="line">systemctl start docker</span><br><span class="line"></span><br><span class="line"><span class="comment">#设置开机自启</span></span><br><span class="line">systemctl <span class="built_in">enable</span> docker</span><br><span class="line"></span><br><span class="line"><span class="comment">#关闭开机自启</span></span><br><span class="line">systemctl <span class="built_in">disable</span> docker</span><br><span class="line"></span><br><span class="line"><span class="comment">#列出本机的所有image文件</span></span><br><span class="line">docker images </span><br><span class="line">或者</span><br><span class="line">docker image ls</span><br><span class="line"></span><br><span class="line"><span class="comment">#删除image文件</span></span><br><span class="line">docker image rm [imageName]</span><br><span class="line">或者</span><br><span class="line">docker rmi [imageName]</span><br><span class="line">-f, -force: 强制删除镜像， 即使有容器依赖它； </span><br><span class="line">-no-prune: 不要清理未带标签的父镜像。 </span><br><span class="line"> </span><br><span class="line"><span class="comment">#抓取镜像（image）</span></span><br><span class="line">docker image pull [imageName]</span><br><span class="line"><span class="comment">#例：</span></span><br><span class="line">docker image pull hello-world</span><br><span class="line"></span><br><span class="line"><span class="comment">#抓取成功后，就可以在本机看到这个image文件了</span></span><br><span class="line">docker image ls </span><br><span class="line"></span><br><span class="line"><span class="comment">#运行image文件</span></span><br><span class="line">docker container run hello-world</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#注意，docker container run命令具有自动抓取 image 文件的功能。如果发现本地没有指定的 image 文件，就会从仓库自动抓取。因此，前面的docker image pull命令并不是必需的步骤。</span></span><br><span class="line"></span><br><span class="line">docker container run hello-world  </span><br><span class="line">等同于</span><br><span class="line">docker image pull hell-world</span><br><span class="line">docker container run hello-world</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#hello-world运行后容器会自动终止，有些不会自动终止的容器，可以用下面的命令</span></span><br><span class="line">docker container <span class="built_in">kill</span> [containID]</span><br><span class="line"></span><br><span class="line"><span class="comment">#查看contain</span></span><br><span class="line">docker ps <span class="comment">#查看正在运行中的容器信息</span></span><br><span class="line">docker ps -a <span class="comment">#查看所有的容器信息</span></span><br><span class="line">docker ps -q <span class="comment">#只查看正在运行中的容器id</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#image文件（镜像）生成的容器（container）实例,本身也是一个文件，成为容器文件，也就是说一旦容器生成就会同时存在两个文件：image文件和容器文件。而且关闭容器并不会删除容器文件，只是容器停止运行而已</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#列出正在运行的容器</span></span><br><span class="line">docker container ls </span><br><span class="line">等同于</span><br><span class="line">docker ps </span><br><span class="line"></span><br><span class="line"><span class="comment">#列出所有容器</span></span><br><span class="line">docker container ls --all</span><br><span class="line">等同于</span><br><span class="line">docker ps -a</span><br><span class="line"></span><br><span class="line"><span class="comment">#终止运行的容器文件，依然会占据硬盘空间，可以使用docker container rm命令删除。</span></span><br><span class="line">docker container rm [containerID]</span><br><span class="line">等同于</span><br><span class="line">docker rm [containerID]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#启动一个nginx容器，检查能正确获取镜像并运行</span></span><br><span class="line">docker run -d -p 80:80 --name webserver nginx</span><br><span class="line"></span><br><span class="line">Nginx 容器已经在 0.0.0.0:80 启动，并映射到 80 端口 。 打开浏览器访问此地址</span><br><span class="line"></span><br><span class="line"><span class="comment">#搜索镜像 可以搜索Docker Hub官方仓库中的镜像，语法为</span></span><br><span class="line"><span class="comment">#docker serach [option] keyword</span></span><br><span class="line">-f,-filter filter:过滤输出内容</span><br><span class="line">--format string:格式化输出内容</span><br><span class="line">--<span class="built_in">limit</span> int:限制输出结果个数，默认为25个</span><br><span class="line">--no-trunc:不截断输出结果</span><br><span class="line"></span><br><span class="line"><span class="comment">#例如，搜索官方的带 nginx关键字的镜像</span></span><br><span class="line">docker search --filter=is-official=<span class="literal">true</span> nginx</span><br><span class="line"></span><br><span class="line"><span class="comment">#搜索所有收藏数超过 4 的关键词包括 tensorflow 的镜像： </span></span><br><span class="line">docker search --filter=stars=4 tensorflow</span><br><span class="line"></span><br><span class="line"><span class="comment">#注意， 当有该镜像创建的容器存在时， 镜像文件默认是无法被删除的， </span></span><br><span class="line"><span class="comment">#先删除依赖该镜像的所有容器， 再来删除镜像</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="创建镜像"><a href="#创建镜像" class="headerlink" title="创建镜像"></a><i>创建镜像</i></h2><p>创建镜像的方法主要有三种： 基于<span style="color:red;">已有镜像的容器</span>创建、 基于<span style="color:red;">本地模板</span>导入、 基于 <span style="color:red;">Dockerfile</span>创建。 </p>
+<p>本节主要介绍 Docker的 <strong>commit</strong>、 <strong>import</strong>和 <strong>build</strong> 子命令。</p>
+<h4 id="1-基于已有容器创建-commit"><a href="#1-基于已有容器创建-commit" class="headerlink" title="1.基于已有容器创建(commit)"></a>1.基于已有容器创建(commit)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker commit [options] container [repository[:tag]]</span><br><span class="line"></span><br><span class="line">#主要选项包括</span><br><span class="line">-a, --author=&quot;&quot;  ：作者信息</span><br><span class="line">-c, --change=[]  :提交的时候执行Dockerfile指令，</span><br><span class="line">包括CMD | ENTRYPOINT | ENV | EXPOSE| LABEL | ONBUILD | USER| VOLUME | WORKDIR等； </span><br><span class="line">-m, --message= 11 11: 提交消息； </span><br><span class="line">-p, --pause式rue: 提交时暂停容器运行。</span><br></pre></td></tr></table></figure>
+
+<h5 id="下面将演示如何使用该命令创建一个新镜像。"><a href="#下面将演示如何使用该命令创建一个新镜像。" class="headerlink" title="下面将演示如何使用该命令创建一个新镜像。"></a>下面将演示如何使用该命令创建一个新镜像。</h5><p><span style="font-size:15px;">首先， 启动一个镜像， 并在其中进行修改操作。例如， 创建一个test文件， 之后退出， </span></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -it ubuntu:18.04 /bin/bash </span><br><span class="line">#进入容器</span><br><span class="line">root@a925cb40b3f0:/# touch test </span><br><span class="line">root@a925cb40b3f0:/# exit</span><br></pre></td></tr></table></figure>
+
+<p>记住容器的 ID为<span style="color:red">a925cb40b3£0</span>。 此时该容器与原 <span style="color:red">ubuntu:18.04</span> 镜像相比， 已经发生了改变， 可以使用</p>
+<p><span style="color:red">docker [container] commit</span>命令来提交为一个新的镜像。提交时可以使用 ID 或名称来指定容器： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker [container] commit -m &quot;Added a new file&quot; -a &quot;Docker Newbee&quot; a925cb40b3f0 test:0.1</span><br></pre></td></tr></table></figure>
+
+<p>顺利的话， 会返回新创建镜像的 ID 信息， 例如<span style="color:red">9e9c814023bcffc3e67e892a235a fe6lb02f66a947d2747f724bd317dda02f27</span>。 </p>
+<p>此时查看本地镜像列表， 会发现新创建的镜像已经存在了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker images</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-基于本地模板导入-import"><a href="#2-基于本地模板导入-import" class="headerlink" title="2.基于本地模板导入(import)"></a><span style="font-size:18px"><b>2.基于本地模板导入</b></span>(import)</h4><p>用户也可以直接从一个操作系统模板文件导人一个镜像，主要使用 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker [image] import [options] file | url | -[repository[:tag]]</span><br></pre></td></tr></table></figure>
+
+<p>要直接导人一个镜像，可以使用 <strong>OpenVZ</strong> 提供的模板来创建，或者用其他已导出的镜像 模板来创建。 </p>
+<p>OPENVZ 模板的下载地址为 <a href="http://openvz.org/Download/templates/precreated。" target="_blank" rel="noopener">http://openvz.org/Download/templates/precreated。</a> </p>
+<p>例如，下载了 ubuntu-18.04 的模板压缩包，之后使用以下命令导人即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$cat ubuntu-18.04-x86_64-minimal.tar.gz I docker import - ubuntu:lB.04</span><br></pre></td></tr></table></figure>
+
+<p>然后查看新导人的镜像，已经在本地存在了 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker images</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-基于-Dockerfile创建-build"><a href="#3-基于-Dockerfile创建-build" class="headerlink" title="3.基于 Dockerfile创建(build)"></a><span style="font-size:18px"><b>3.基于 Dockerfile创建</b></span>(build)</h4><p>基于 Dockerfile 创建是<strong>最常见</strong>的方式。 Dockerfile 是一个文本文件，利用给定的指令描述基于某个父镜像创建新镜像的过程。 </p>
+<p>下面给出 Dockerfile 的一个简单示例，基于 debian:stretch-slim镜像安装 Python 3 环境，构成一个新的 python:3 镜像：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">FROM debian:stretch-slim </span><br><span class="line">LABEL version；” 1 . 。 ” maintainer＝” docker user &lt;docker_user@github&gt;” </span><br><span class="line">RUN apt-get update &amp;&amp; \</span><br><span class="line">	apt-get install -y python3 &amp;&amp; \</span><br><span class="line">	apt-get clean &amp;&amp; \</span><br><span class="line">	rm -rf /var/lib/apt/lists/*</span><br></pre></td></tr></table></figure>
+
+<p>创建镜像的过程可以使用 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker [image] build</span><br></pre></td></tr></table></figure>
+
+<p>编译成功后本地将多出一 个 python : 3 镜像：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ docker [image] build -t python:3 </span><br><span class="line"></span><br><span class="line">Successful ly built 4b10f46eacc8 </span><br><span class="line">Successfully tagged python:3 </span><br><span class="line"></span><br><span class="line">$ docker imageslgrep python </span><br><span class="line"></span><br><span class="line">python 3 4b10f46eacc8 About a minute ago 95.lMB</span><br></pre></td></tr></table></figure>
+
+<h4 id="存入和载入镜像"><a href="#存入和载入镜像" class="headerlink" title="存入和载入镜像"></a>存入和载入镜像</h4><p>本节主要介绍 Docker 镜像的 <strong>save</strong> 和 <strong>load</strong> 子命令。 用户可以使用 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker [image] save </span><br><span class="line">docker [image] load</span><br></pre></td></tr></table></figure>
+
+<p>命令来存出和载人镜像。</p>
+<p><strong>存出镜像:</strong></p>
+<p>如果要导出镜像到本地文件，可以使用 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker [image] save</span><br></pre></td></tr></table></figure>
+
+<p>该命令支持 <strong>-o、 －output string</strong> 参数， 导出镜像到指定的文件中。 </p>
+<p>例如，导出本地的 ubuntu:lS.04 镜像为文件 ubuntu 18.04.tar ，如下所示 ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker images </span><br><span class="line">$ docker save -o ubuntu 18 04 tar ubuntu:18 .04</span><br></pre></td></tr></table></figure>
+
+<p>之后，用户就可以通过复制 <span style="color:red">ubuntu 18.04.tar</span> 文件将该镜像分享给他人。</p>
+<p><strong>载入镜像</strong></p>
+<p>可以使用 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker [image] load</span><br></pre></td></tr></table></figure>
+
+<p>将导出的 tar 文件再导人到本地镜像库。支持<strong>-i、-input、string</strong>选项，从指定文件中读人镜像内容。</p>
+<p> 例如，从文件 ubuntu 18.04.tar 导人镜像到本地镜像列表，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker load -i ubuntu_18 04 tar </span><br><span class="line">或者：</span><br><span class="line">$ docker load &lt; ubuntu_18 04 tar</span><br></pre></td></tr></table></figure>
+
+<p>这将导人镜像及其相关的元数据信息（包括标签等）。 导人成功后，可以使用</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+
+<p> 命令进行查看， 与原镜像一致。</p>
+<h4 id="上传镜像"><a href="#上传镜像" class="headerlink" title="上传镜像"></a>上传镜像</h4><p>本节主要介绍 Docker 镜像的 push 子命令。 可以使用 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker [image] push</span><br></pre></td></tr></table></figure>
+
+<p>命令上 传镜像到仓库，默认上传到 Docker Hub 官方仓库（需要登录）。</p>
+<p>命令格式为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker [image] push NAME[:TAG] | [REGISTRY_PORT[:REGISTRY_PORT]/]NAME[:TAG]</span><br></pre></td></tr></table></figure>
+
+<p>用户在 Docker Hub 网站注册后可以上传自制的镜像。 例如，用户 user 上传本地的 test :latest 镜像，可以先添加新的标签 </p>
+<p>user/test:latest ， 然后用 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker [image] push</span><br></pre></td></tr></table></figure>
+
+<p>命令上传镜像：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ docker tag test:latest user/test :latest </span><br><span class="line">$ docker push user/test:latest </span><br><span class="line"></span><br><span class="line">The push refers to a repository  [docker.io/user/test] </span><br><span class="line">Sending image list </span><br><span class="line"></span><br><span class="line">Please login prior to push: </span><br><span class="line">Username : </span><br><span class="line">Password: </span><br><span class="line">Email :</span><br></pre></td></tr></table></figure>
+
+<p>第一次上传时，会提示输入登录信息或进行注册，之后登录信息会记录到本地<strong>～／ . docker</strong> 目录下。</p>
+<h3 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">本章具体介绍了围绕 Docker 镜像的一系列重要命令操作，包括获取、查看、 搜索、 删 除、创建、存出和载入、上传等。 读者可以使用 docker image help 命令查看 Docker 支 持的镜像操作子命令。 镜像是使用 Docker 的前提，也是最基本的资源。 所以，在平时的 Docker 使用中， 要注 意积累自己定制的镜像文件，并将自己创建的高质量镜像分享到社区中。 在后续章节，笔者将通过更多案例介绍 Docker 镜像的操作技巧。</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>ww</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://yoursite.com/2019/04/21/镜像操作命令/">http://yoursite.com/2019/04/21/镜像操作命令/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>good good stady</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/04/22/容器操作命令/">docker容器操作命令</a>
+            
+            
+            <a class="next" rel="next" href="/2019/04/20/基础命令详解/">docker基础命令详解</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© ww | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

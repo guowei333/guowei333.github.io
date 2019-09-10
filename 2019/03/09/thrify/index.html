@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+<title>thrify | </title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">ww</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">ww</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">帖子</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">简历</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">thrify</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">ww</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">三月 9, 2019&nbsp;&nbsp;17:08:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Thirft"><a href="#Thirft" class="headerlink" title="Thirft"></a>Thirft</h1><p>Thrift实际上是实现了C/S模式，通过代码生成工具将接口定义文件生成服务器端和客户端代码从而实现服务端和客户端跨语言的支持用户在Thirft描述文件中声明自己的服务</p>
+<p>Thrift最初由facebook开发，07年四月开放源码，08年5月进入apache孵化器。</p>
+<p>Apache Thrift 是一款跨语言的服务框架，传输数据采用二进制格式，相对 XML 和 JSON 体积更小，对于高并发、大数据量和多语言的环境更有优势。</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>Thrift 支持 8 种数据类型：</p>
+<p>bool: true or false</p>
+<p>byte: signed byte</p>
+<p>i16/i32/i64: 16/32/64位 signed integer</p>
+<p>double: 64位</p>
+<p>binary: byte array</p>
+<p>string</p>
+<p>3 种容器：</p>
+<p>list: 排序数组，可以重复</p>
+<p>set: 集合，每个元素唯一</p>
+<p>map: t1 唯一</p>
+<h1 id="什么是Thrift"><a href="#什么是Thrift" class="headerlink" title="什么是Thrift"></a>什么是Thrift</h1><p>简单来说就是你可以按照Thrift定义语法编写.thrift,然后用Thrift命令行生成各种语言的代码，比如OC、Java、C++、JS，python,调用这些代码就可以完成客户端与服务器的通信了，不需要自己去写网络请求、数据解析等接口</p>
+<h1 id="为什么使用Thrift"><a href="#为什么使用Thrift" class="headerlink" title="为什么使用Thrift"></a>为什么使用Thrift</h1><p>在实际项目中主要考虑到这两个优点：</p>
+<p>RPC。通过简单定义Thrift描述语言文件，使用Thrift -gen命令可以生成多种语言的代码，这些代码包含了网络通信,数据编解码的功能。这就免去了前后台编写这部分繁琐的代码，同时也统一了前后台的实现逻辑。</p>
+<h6 id="Thrift的二进制数据的编码比json更加紧凑、减少了无用的数据的传输"><a href="#Thrift的二进制数据的编码比json更加紧凑、减少了无用的数据的传输" class="headerlink" title="Thrift的二进制数据的编码比json更加紧凑、减少了无用的数据的传输"></a>Thrift的二进制数据的编码比json更加紧凑、减少了无用的数据的传输</h6><h1 id="Thrift的数据编解码"><a href="#Thrift的数据编解码" class="headerlink" title="Thrift的数据编解码"></a>Thrift的数据编解码</h1><h6 id="我们知道json中一个对象类似于这样的：-“key”-”content”-但实际上这个对象只有“content”才是我们真正想要的数据，而“key”这个字符串并不是我们实际需要的，只是为了做一个标记，方便我们查找“content”。而Thrift则可以省去“key”这个多余的字符串。"><a href="#我们知道json中一个对象类似于这样的：-“key”-”content”-但实际上这个对象只有“content”才是我们真正想要的数据，而“key”这个字符串并不是我们实际需要的，只是为了做一个标记，方便我们查找“content”。而Thrift则可以省去“key”这个多余的字符串。" class="headerlink" title="我们知道json中一个对象类似于这样的：{“key”:”content”},但实际上这个对象只有“content”才是我们真正想要的数据，而“key”这个字符串并不是我们实际需要的，只是为了做一个标记，方便我们查找“content”。而Thrift则可以省去“key”这个多余的字符串。"></a>我们知道json中一个对象类似于这样的：{“key”:”content”},但实际上这个对象只有“content”才是我们真正想要的数据，而“key”这个字符串并不是我们实际需要的，只是为了做一个标记，方便我们查找“content”。而Thrift则可以省去“key”这个多余的字符串。</h6><p>我们定义thrift的结构里的属性名称实际上在thrift数据二进制编解码是被忽略的（thrift的json编解码未验证），这个名称的作用只是作为生成的OC代码类的属性名称。这也解释了为什么Thrift的二进制编码会比平时使用的json更省流量。同时也说明了只要我们在.thrift文件中定义struct的时候保证struct的属性的顺序不变，即使通信双方使用了各自使用不同的属性名称也不会有问题。</p>
+<h1 id="thriftpy2安装"><a href="#thriftpy2安装" class="headerlink" title="thriftpy2安装"></a>thriftpy2安装</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install thriftpy2</span><br></pre></td></tr></table></figure>
+
+<h1 id="thriftpy2使用"><a href="#thriftpy2使用" class="headerlink" title="thriftpy2使用"></a>thriftpy2使用</h1><p>首先定义thrift通讯文件，无论是server服务端和client客户端都需要依赖这个文件进行通讯 文件名可以随便起 pingpong.thrift </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">service PingPong &#123; <span class="comment">#固定的写法 文件里面不可以加注释 注释方便理解</span></span><br><span class="line">    string ping(), </span><br><span class="line">    <span class="comment">#自定义ping（）server和client通讯都需要通过该参数  string代表改参数的数据类型</span></span><br><span class="line">    <span class="comment">#定义多个参数 使用</span></span><br><span class="line">    test(</span><br><span class="line">    	<span class="number">1</span>:数据类型 参数名，</span><br><span class="line">    	<span class="number">2</span>：数据类型 参数名，</span><br><span class="line">    ),</span><br><span class="line">    string check_login(</span><br><span class="line">        <span class="number">1</span>: string username,</span><br><span class="line">        <span class="number">2</span>: string password</span><br><span class="line">    ),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 可以看到我们定义了两个方法，一个有参一个无参，第一个方法用来检测接口是否通信成功，也就是传统的ping命令，第二个方法顾名思义，用户登录</p>
+<p>然后建立一个thrift_server.py 建立服务端的代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#导包</span></span><br><span class="line"><span class="keyword">import</span> thriftpy2</span><br><span class="line"><span class="comment">#定义变量 = thriftpy2.load() 代表加载我们上面定义的thrift配置文件 module_name代表起一个名字 建议一样</span></span><br><span class="line">pingpong_thrift = thriftpy2.load(<span class="string">"pingpong.thrift"</span>, module_name=<span class="string">"pingpong_thrift"</span>)</span><br><span class="line"><span class="comment">#导入模块rpc 搭建 服务端</span></span><br><span class="line"><span class="keyword">from</span> thriftpy2.rpc <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dispatcher</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="comment">#函数名后面的server调用 里面接受client访问传入的值</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">ping</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"pong"</span></span><br><span class="line">	<span class="comment">#括号里面是cilent发送过来要接受的参数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">check_login</span><span class="params">(self,username,password)</span>:</span></span><br><span class="line">        print(username,password)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'123'</span></span><br><span class="line"><span class="comment">#固定启动服务  上面定义的变量.调用配置文件的函数 ，定义的类（）</span></span><br><span class="line">server = make_server(pingpong_thrift.PingPong, Dispatcher(), <span class="string">'127.0.0.1'</span>, <span class="number">6000</span>)</span><br><span class="line">server.serve()</span><br></pre></td></tr></table></figure>
+
+<p>服务端首先读取通信文件，然后建立起一个服务，监听6000端口，等待客户端请求，实际上服务端的方法也是主要业务逻辑编写的地方。</p>
+<p> 随后建立一个thrift_client.py文件，编写客户端代码</p>
+<p>​    </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> thriftpy2</span><br><span class="line"><span class="comment">#跟上面一样</span></span><br><span class="line">pingpong_thrift = thriftpy2.load(<span class="string">"pingpong.thrift"</span>, module_name=<span class="string">"pingpong_thrift"</span>)</span><br><span class="line"><span class="comment">#导入服务端client</span></span><br><span class="line"><span class="keyword">from</span> thriftpy2.rpc <span class="keyword">import</span> make_client</span><br><span class="line"><span class="comment">#创建服务端访问的接口 </span></span><br><span class="line">client = make_client(pingpong_thrift.PingPong, <span class="string">'127.0.0.1'</span>, <span class="number">6000</span>)</span><br><span class="line"><span class="comment">#服务端要访问的接口</span></span><br><span class="line">print(client.ping())</span><br><span class="line"><span class="comment">#带参数的在括号里面传入相应的参数</span></span><br><span class="line">print(client.check_login(<span class="string">'admin'</span>,<span class="string">'123456'</span>))</span><br></pre></td></tr></table></figure>
+
+<p>下面项目代码实例 框架为tornado</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#测试rpc接口</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestRpcHandler</span><span class="params">(BaseHandler)</span>:</span></span><br><span class="line">    <span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></span><br><span class="line">        username = self.get_argument(<span class="string">'username'</span>,<span class="string">'没有收到'</span>)</span><br><span class="line">        print(username)</span><br><span class="line"></span><br><span class="line">        <span class="comment">#登录逻辑不写了，而是直接请求rpc的用户认证服务，所有逻辑全在rpc的server端写</span></span><br><span class="line">        <span class="comment">#获取到 定义的配置文件路径</span></span><br><span class="line">        thrift_path = os.path.dirname(os.path.dirname(__file__))+<span class="string">"/pingpong.thrift"</span></span><br><span class="line">        <span class="keyword">import</span> thriftpy2</span><br><span class="line">        <span class="comment">#读取配置文件</span></span><br><span class="line">        pingpong_thrift = thriftpy2.load(thrift_path, module_name=<span class="string">"pingpong_thrift"</span>)</span><br><span class="line">        <span class="comment">#导入client客户端包 </span></span><br><span class="line">        <span class="keyword">from</span> thriftpy2.rpc <span class="keyword">import</span> make_client</span><br><span class="line">        <span class="comment">#定义要访问的的接口 pingpong_thrift.PingPpong为配置文件的service 的 		PingPong 不导入则报错</span></span><br><span class="line">        client = make_client(pingpong_thrift.PingPong, <span class="string">'127.0.0.1'</span>, <span class="number">6000</span>)</span><br><span class="line"> </span><br><span class="line">		<span class="comment">#访问 server定义的 check_login接口 server接口写入登陆逻辑</span></span><br><span class="line">        print(<span class="string">"thrift返回值是:"</span>+client.check_login(username,<span class="string">'123456'</span>))</span><br><span class="line"></span><br><span class="line">        self.write(<span class="string">'测试rpc'</span>)</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>ww</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://yoursite.com/2019/03/09/thrify/">http://yoursite.com/2019/03/09/thrify/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>good good stady</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/04/20/基础命令详解/">docker基础命令详解</a>
+            
+            
+            <a class="next" rel="next" href="/2018/09/11/2镜像操作命令/">docker镜像操作命令</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© ww | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
